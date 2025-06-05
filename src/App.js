@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './components/Login/Login';
+import Dashboard from './components/Pages/Dashboard';
+import Layout from './components/Layout/Layout';
+import Food from './components/Pages/Food';
+import Orders from './components/Pages/Orders';
+import Reservations from './components/Pages/Reservations';
+import NotFound from './CommonComponents/NotFound/NotFound';
+import { AppProvider } from './components/Context/AppContext';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-           <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppProvider>
+      <Router>
+        <Layout>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/food" element={<Food />} />
+          <Route path="/reservations" element={<Reservations />} />
+          <Route path="/staff" element={<Navigate to="/" />} />
+          <Route path="/settings" element={<Navigate to="/" />} />
+          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Layout>
+      </Router>
+    </AppProvider>
   );
 }
 

@@ -1,0 +1,35 @@
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .layout-container {
+    display: flex;
+    flex: 1;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: var(--spacing-md);
+    overflow-y: auto;
+    background-color: var(--color-neutral-50);
+    transition: padding var(--transition-medium);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    .main-content {
+      background-color: var(--dark-bg);
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .layout-container {
+      flex-direction: column;
+    }
+    
+    .main-content {
+      padding: var(--spacing-sm);
+    }
+  }
