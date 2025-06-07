@@ -2,12 +2,11 @@ import React from 'react';
 import { useAppContext } from '../Context/AppContext';
 import StatsCard from '../Dashboard/StatsCard';
 import RecentOrders from '../Dashboard/RecentOrders';
-import RecentReservations from '../Dashboard/RecentReservations';
 import OrdersChart from '../Dashboard/OrdersChart';
 import { ShoppingBag, DollarSign, Clock, CheckCircle, Calendar, Users } from 'lucide-react';
 
 const Dashboard = () => {
-  const { orders, reservations, dashboardStats } = useAppContext();
+  const { orders, dashboardStats } = useAppContext();
   
   return (
     <div className="space-y-6">
@@ -49,7 +48,7 @@ const Dashboard = () => {
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <RecentOrders orders={orders} />
-        <RecentReservations reservations={reservations} />
+        {/* <RecentReservations reservations={reservations} /> */}
       </div>
       
       <OrdersChart orders={orders} />

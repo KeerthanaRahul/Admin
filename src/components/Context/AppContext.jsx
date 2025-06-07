@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { initialFoodItems, initialOrders, initialReservations } from '../data/mockData';
+import { initialFoodItems, initialOrders, initialSupportTickets } from '../data/mockData';
 import { v4 as uuidv4 } from 'uuid';
-
 
 const AppContext = createContext(undefined);
 
@@ -16,9 +15,9 @@ export const AppProvider = ({ children }) => {
     return savedOrders ? JSON.parse(savedOrders) : initialOrders;
   });
   
-  const [reservations, setReservations] = useState(() => {
-    const savedReservations = localStorage.getItem('reservations');
-    return savedReservations ? JSON.parse(savedReservations) : initialReservations;
+  const [supportTickets, setSupportTickets] = useState(() => {
+    const savedTickets = localStorage.getItem('supportTickets');
+    return savedTickets ? JSON.parse(savedTickets) : initialSupportTickets;
   });
 
   // Calculate dashboard stats based on current data
@@ -29,26 +28,26 @@ export const AppProvider = ({ children }) => {
       ['pending', 'preparing'].includes(order.status)).length;
     const completedOrders = orders.filter(order => 
       order.status === 'delivered').length;
-    const totalReservations = reservations.length;
-    const pendingReservations = reservations.filter(reservation => 
-      reservation.status === 'pending').length;
+    const totalSupportTickets = supportTickets.length;
+    const pendingSupportTickets = supportTickets.filter(ticket => 
+      ['open', 'in-progress'].includes(ticket.status)).length;
     
     return {
       totalOrders,
       totalRevenue,
       pendingOrders,
       completedOrders,
-      totalReservations,
-      pendingReservations
+      totalSupportTickets,
+      pendingSupportTickets
     };
   };
 
   const [dashboardStats, setDashboardStats] = useState(calculateDashboardStats());
 
-  // Update dashboard stats whenever orders or reservations change
+  // Update dashboard stats whenever orders or support tickets change
   useEffect(() => {
     setDashboardStats(calculateDashboardStats());
-  }, [orders, reservations]);
+  }, [orders, supportTickets]);
 
   // Persist data to localStorage
   useEffect(() => {
@@ -60,8 +59,8 @@ export const AppProvider = ({ children }) => {
   }, [orders]);
   
   useEffect(() => {
-    localStorage.setItem('reservations', JSON.stringify(reservations));
-  }, [reservations]);
+    localStorage.setItem('supportTickets', JSON.stringify(supportTickets));
+  }, [supportTickets]);
 
   // Food Items CRUD
   const addFoodItem = (foodItem) => {
@@ -103,20 +102,36 @@ export const AppProvider = ({ children }) => {
     setOrders(orders.filter(order => order.id !== id));
   };
 
-  // Reservations CRUD
-  const addReservation = (reservation) => {
-    const newReservation = { ...reservation, id: uuidv4() };
-    setReservations([...reservations, newReservation]);
+  // Support Tickets CRUD
+  const addSupportTicket = (ticket) => {
+    const now = new Date().toISOString();
+    const newTicket = { 
+      ...ticket, 
+      id: uuidv4(), 
+      createdAt: now, 
+      updatedAt: now 
+    };
+    setSupportTickets([...supportTickets, newTicket]);
   };
   
-  const updateReservation = (id, updatedReservation) => {
-    setReservations(reservations.map(reservation => 
-      reservation.id === id ? { ...reservation, ...updatedReservation } : reservation
+  const updateSupportTicket = (id, updatedTicket) => {
+    setSupportTickets(supportTickets.map(ticket => 
+      ticket.id === id 
+        ? { ...ticket, ...updatedTicket, updatedAt: new Date().toISOString() } 
+        : ticket
+    ));
+  };
+
+  const updateSupportTicketStatus = (id, status) => {
+    setSupportTickets(supportTickets.map(ticket => 
+      ticket.id === id 
+        ? { ...ticket, status, updatedAt: new Date().toISOString() } 
+        : ticket
     ));
   };
   
-  const deleteReservation = (id) => {
-    setReservations(reservations.filter(reservation => reservation.id !== id));
+  const deleteSupportTicket = (id) => {
+    setSupportTickets(supportTickets.filter(ticket => ticket.id !== id));
   };
 
   return (
@@ -129,10 +144,11 @@ export const AppProvider = ({ children }) => {
       addOrder,
       updateOrderStatus,
       deleteOrder,
-      reservations,
-      addReservation,
-      updateReservation,
-      deleteReservation,
+      supportTickets,
+      addSupportTicket,
+      updateSupportTicket,
+      updateSupportTicketStatus,
+      deleteSupportTicket,
       dashboardStats
     }}>
       {children}

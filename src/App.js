@@ -4,9 +4,9 @@ import Dashboard from './components/Pages/Dashboard';
 import Layout from './components/Layout/Layout';
 import Food from './components/Pages/Food';
 import Orders from './components/Pages/Orders';
-import Reservations from './components/Pages/Reservations';
 import NotFound from './CommonComponents/NotFound/NotFound';
 import { AppProvider } from './components/Context/AppContext';
+import Support from './components/Pages/Support';
 
 function App() {
   return (
@@ -18,10 +18,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/food" element={<Food />} />
-          <Route path="/reservations" element={<Reservations />} />
-          <Route path="/staff" element={<Navigate to="/" />} />
-          <Route path="/settings" element={<Navigate to="/" />} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/support" element={<Support />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>

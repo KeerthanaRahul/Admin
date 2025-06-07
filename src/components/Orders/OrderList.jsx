@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import Card from '../ui/Card';
-import { OrderStatusBadge } from '../ui/Badge';
-import Button from '../ui/Button';
 import { format } from 'date-fns';
-import { Eye, Trash2 } from 'lucide-react';
+import { Eye, Trash2, Edit } from 'lucide-react';
 import Select from '../ui/Select';
-
+import Button from '../ui/Button';
+import Card from '../ui/Card';
 
 const OrderList = ({
   orders,
   onViewDetails,
+  onEdit,
   onStatusChange,
   onDeleteOrder,
 }) => {
@@ -77,6 +76,9 @@ const OrderList = ({
                 Customer
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Table
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Date
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -100,7 +102,9 @@ const OrderList = ({
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">{order.customerName}</div>
-                  <div className="text-sm text-gray-500">Table {order.tableNumber}</div>
+                </td>
+                <td className="px-4 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">Table {order.tableNumber}</div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
@@ -142,6 +146,14 @@ const OrderList = ({
                       <Eye size={16} className="mr-1" /> View
                     </Button>
                     <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => onEdit(order)}
+                      className="flex items-center"
+                    >
+                      <Edit size={16} className="mr-1" /> Edit
+                    </Button>
+                    <Button
                       variant="danger"
                       size="sm"
                       onClick={() => onDeleteOrder(order.id)}
@@ -156,7 +168,7 @@ const OrderList = ({
             
             {sortedOrders.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-4 text-sm text-gray-500 text-center">
+                <td colSpan={7} className="px-4 py-4 text-sm text-gray-500 text-center">
                   No orders found
                 </td>
               </tr>

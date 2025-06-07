@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
+
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
@@ -19,8 +20,8 @@ const Layout = ({ children }) => {
         return 'Orders Management';
       case '/food':
         return 'Menu Items';
-      case '/reservations':
-        return 'Reservations';
+      case '/support':
+        return 'Customer Support';
       case '/staff':
         return 'Staff Management';
       case '/settings':

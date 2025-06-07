@@ -7,6 +7,7 @@ import {
   CalendarDays, 
   Users,
   Settings, 
+  MessageSquare,
   LogOut 
 } from 'lucide-react';
 
@@ -30,20 +31,10 @@ const Sidebar = () => {
       icon: <Coffee size={20} /> 
     },
     { 
-      path: '/reservations', 
-      name: 'Reservations', 
-      icon: <CalendarDays size={20} /> 
-    },
-    { 
-      path: '/staff', 
-      name: 'Staff', 
-      icon: <Users size={20} /> 
-    },
-    { 
-      path: '/settings', 
-      name: 'Settings', 
-      icon: <Settings size={20} /> 
-    },
+      path: '/support', 
+      name: 'Support', 
+      icon: <MessageSquare size={20} /> 
+    }
   ];
   
   return (

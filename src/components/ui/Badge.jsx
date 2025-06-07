@@ -39,18 +39,38 @@ export const OrderStatusBadge = ({ status }) => {
   return <Badge variant={getVariant()}>{getLabel()}</Badge>;
 };
 
-export const ReservationStatusBadge = ({ status }) => {
+export const SupportStatusBadge = ({ status }) => {
   const getVariant = () => {
     switch (status) {
-      case 'confirmed': return 'success';
-      case 'pending': return 'warning';
-      case 'cancelled': return 'danger';
+      case 'open': return 'danger';
+      case 'in-progress': return 'warning';
+      case 'resolved': return 'success';
+      case 'closed': return 'info';
       default: return 'info';
     }
   };
   
   const getLabel = () => {
-    return status.charAt(0).toUpperCase() + status.slice(1);
+    return status === 'in-progress' ? 'In Progress' : 
+           status.charAt(0).toUpperCase() + status.slice(1);
+  };
+  
+  return <Badge variant={getVariant()}>{getLabel()}</Badge>;
+};
+
+export const SupportPriorityBadge = ({ priority }) => {
+  const getVariant = () => {
+    switch (priority) {
+      case 'urgent': return 'danger';
+      case 'high': return 'warning';
+      case 'medium': return 'primary';
+      case 'low': return 'info';
+      default: return 'info';
+    }
+  };
+  
+  const getLabel = () => {
+    return priority.charAt(0).toUpperCase() + priority.slice(1);
   };
   
   return <Badge variant={getVariant()}>{getLabel()}</Badge>;
