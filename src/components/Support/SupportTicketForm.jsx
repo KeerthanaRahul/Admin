@@ -12,23 +12,23 @@ const SupportTicketForm = ({
   onCancel,
 }) => {
   const [customerName, setCustomerName] = useState('');
-  const [email, setEmail] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
   const [tableNumber, setTableNumber] = useState('');
   const [problemType, setProblemType] = useState('other');
   const [priority, setPriority] = useState('medium');
   const [status, setStatus] = useState('open');
-  const [description, setDescription] = useState('');
+  const [problemDesc, setProblemDesc] = useState('');
   const [errors, setErrors] = useState({});
   
   useEffect(() => {
     if (initialData) {
       setCustomerName(initialData.customerName);
-      setEmail(initialData.email);
+      setCustomerEmail(initialData.customerEmail);
       setTableNumber(initialData.tableNumber);
       setProblemType(initialData.problemType);
       setPriority(initialData.priority);
       setStatus(initialData.status);
-      setDescription(initialData.description);
+      setProblemDesc(initialData.problemDesc);
     }
   }, [initialData]);
   
@@ -61,18 +61,18 @@ const SupportTicketForm = ({
       newErrors.customerName = 'Customer name is required';
     }
     
-    if (!email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Email is invalid';
+    if (!customerEmail.trim()) {
+      newErrors.customerEmail = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(customerEmail)) {
+      newErrors.customerEmail = 'Email is invalid';
     }
     
     if (!tableNumber.trim()) {
       newErrors.tableNumber = 'Table number is required';
     }
     
-    if (!description.trim()) {
-      newErrors.description = 'Problem description is required';
+    if (!problemDesc.trim()) {
+      newErrors.problemDesc = 'Problem problemDesc is required';
     }
     
     setErrors(newErrors);
@@ -88,12 +88,12 @@ const SupportTicketForm = ({
     
     onSubmit({
       customerName,
-      email,
+      customerEmail,
       tableNumber,
       problemType,
       priority,
       status,
-      description,
+      problemDesc,
     });
   };
   
@@ -124,12 +124,12 @@ const SupportTicketForm = ({
         
         <Input
           label="Email Address"
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          id="customerEmail"
+          type="customerEmail"
+          value={customerEmail}
+          onChange={(e) => setCustomerEmail(e.target.value)}
           placeholder="Email address"
-          error={errors.email}
+          error={errors.customerEmail}
           fullWidth
           className="mb-4"
         />
@@ -165,12 +165,12 @@ const SupportTicketForm = ({
         
         <TextArea
           label="Problem Description"
-          id="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          id="problemDesc"
+          value={problemDesc}
+          onChange={(e) => setProblemDesc(e.target.value)}
           placeholder="Please describe the problem in detail..."
           rows={4}
-          error={errors.description}
+          error={errors.problemDesc}
           fullWidth
           className="mb-4"
         />

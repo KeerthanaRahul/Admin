@@ -9,10 +9,17 @@ const OrderDetails= ({
   order,
   onClose,
   onStatusChange,
+  onEdit
 }) => {
   const handleStatusChange = (e) => {
     onStatusChange(order.id, e.target.value);
   };
+
+  function convertSecondsToDate(seconds) {
+    const milliseconds = seconds * 1000;
+    const date = new Date(milliseconds);
+    return date.toDateString();
+  }
   
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -61,15 +68,15 @@ const OrderDetails= ({
                     <div>
                       <p className="text-sm font-medium text-gray-500">Created At</p>
                       <p className="text-sm text-gray-900">
-                        {format(new Date(order.createdAt), 'MMM d, yyyy h:mm a')}
+                        {convertSecondsToDate(order.createdAt?._seconds)}
                       </p>
                     </div>
-                    <div>
+                    {order.updatedAt && <div>
                       <p className="text-sm font-medium text-gray-500">Last Updated</p>
                       <p className="text-sm text-gray-900">
-                        {format(new Date(order.updatedAt), 'MMM d, yyyy h:mm a')}
+                        {convertSecondsToDate(order.updatedAt?._seconds)}
                       </p>
-                    </div>
+                    </div>}
                   </div>
                   
                   <div className="mb-4">
@@ -144,6 +151,13 @@ const OrderDetails= ({
           </div>
           
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          { (order.status !== 'delivered' && order.status !== 'ready' && order.status !== 'cancelled') && <Button
+              variant="primary"
+              onClick={() => onEdit(order)}
+              className="w-full sm:w-auto sm:ml-3"
+            >
+              Edit Order
+            </Button> }
             <Button
               variant="primary"
               onClick={onClose}

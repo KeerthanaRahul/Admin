@@ -5,22 +5,28 @@ import Select from '../ui/Select';
 import Button from '../ui/Button';
 import { Plus, Minus, Trash2 } from 'lucide-react';
 import { useAppContext } from '../Context/AppContext';
+import Loader from '../../CommonComponents/Loader/Loader';
 
 const OrderForm = ({
   initialData,
   onSubmit,
   onCancel,
 }) => {
-  const { foodItems } = useAppContext();
   const [customerName, setCustomerName] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
   const [tableNumber, setTableNumber] = useState('');
   const [status, setStatus] = useState('pending');
   const [items, setItems] = useState([]);
   const [errors, setErrors] = useState({});
+  const [foodItemOptions, setFoodItemOptions] = useState([]);
+  const [foodItems, setFoodItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [foodItemError, setFoodItemsError] = useState('');
   
   useEffect(() => {
     if (initialData) {
       setCustomerName(initialData.customerName);
+      setCustomerEmail(initialData.customerEmail);
       setTableNumber(initialData.tableNumber);
       setStatus(initialData.status);
       setItems(initialData.items.map(item => ({
@@ -30,7 +36,6 @@ const OrderForm = ({
         price: item.price,
       })));
     } else {
-      // Add one empty item for new orders
       setItems([{ foodId: '', name: '', quantity: 1, price: 0 }]);
     }
   }, [initialData]);
@@ -43,14 +48,36 @@ const OrderForm = ({
     { value: 'cancelled', label: 'Cancelled' },
   ];
 
-  const availableFoodItems = foodItems.filter(item => item.available);
-  const foodItemOptions = [
-    { value: '', label: 'Select an item...' },
-    ...availableFoodItems.map(item => ({
-      value: item.id,
-      label: `${item.name} - $${item.price.toFixed(2)}`,
-    })),
-  ];
+  const handleFoodData = data => {
+    const availableFoodItems = data.filter(item => item.available);
+    const foodItemOptions = [
+      { value: '', label: 'Select an item...' },
+      ...availableFoodItems.map(item => ({
+        value: item.id,
+        label: `${item.name} - $${item.price.toFixed(2)}`,
+      })),
+    ];
+    setFoodItemOptions(foodItemOptions);
+  }
+
+  const getFoodItems = async() => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`http://localhost:8082/api/v1/food/getFoodItems`);
+      const data = await res.json();
+      setFoodItems(data?.foodList);
+      handleFoodData(data?.foodList);
+      } catch (error) {
+      setFoodItemsError('Something went wrong. Please try again later.');
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    getFoodItems();
+  }, [])
+  
   
   const validateForm = () => {
     const newErrors = {};
@@ -59,6 +86,12 @@ const OrderForm = ({
       newErrors.customerName = 'Customer name is required';
     }
     
+    if (!customerEmail.trim()) {
+      newErrors.customerEmail = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(customerEmail)) {
+      newErrors.customerEmail = 'Email is invalid';
+    }
+
     if (!tableNumber.trim()) {
       newErrors.tableNumber = 'Table number is required';
     }
@@ -89,6 +122,7 @@ const OrderForm = ({
     
     onSubmit({
       customerName,
+      customerEmail,
       tableNumber,
       status,
       items: validItems,
@@ -138,6 +172,8 @@ const OrderForm = ({
   const totalAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   
   return (
+    <>
+    {(isLoading) && <Loader showLoader={(isLoading)} />}
     <Card title={initialData ? 'Edit Order' : 'Create New Order'}>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -161,6 +197,18 @@ const OrderForm = ({
             fullWidth
           />
         </div>
+
+        <Input
+          label="Email Address"
+          id="customerEmail"
+          type="customerEmail"
+          value={customerEmail}
+          onChange={(e) => setCustomerEmail(e.target.value)}
+          placeholder="Email address"
+          error={errors.customerEmail}
+          fullWidth
+          className="mb-4"
+        />
         
         <Select
           label="Order Status"
@@ -194,7 +242,7 @@ const OrderForm = ({
           
           <div className="space-y-3">
             {items.map((item, index) => (
-              <div key={index} className="flex items-end gap-2 p-3 border border-gray-200 rounded-md">
+              !foodItemError?.length > 0 && <div key={index} className="flex items-end gap-2 p-3 border border-gray-200 rounded-md">
                 <div className="flex-1">
                   <Select
                     label="Food Item"
@@ -257,7 +305,7 @@ const OrderForm = ({
                 )}
               </div>
             ))}
-          </div>
+          </div> 
           
           <div className="mt-4 p-3 bg-gray-50 rounded-md">
             <div className="flex justify-between items-center">
@@ -281,6 +329,7 @@ const OrderForm = ({
         </div>
       </form>
     </Card>
+    </>
   );
 };
 

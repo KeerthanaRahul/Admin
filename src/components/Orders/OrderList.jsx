@@ -11,6 +11,7 @@ const OrderList = ({
   onEdit,
   onStatusChange,
   onDeleteOrder,
+  ordersError
 }) => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortOrder, setSortOrder] = useState('newest');
@@ -42,6 +43,12 @@ const OrderList = ({
   const handleStatusChange = (orderId, newStatus) => {
     onStatusChange(orderId, newStatus);
   };
+
+  function convertSecondsToDate(seconds) {
+    const milliseconds = seconds * 1000;
+    const date = new Date(milliseconds);
+    return date.toDateString();
+  }
   
   return (
     <Card title="Orders">
@@ -108,10 +115,10 @@ const OrderList = ({
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {format(new Date(order.createdAt), 'MMM d, yyyy')}
+                    {convertSecondsToDate(order.createdAt?._seconds)}
                   </div>
                   <div className="text-sm text-gray-500">
-                    {format(new Date(order.createdAt), 'h:mm a')}
+                    {convertSecondsToDate(order.createdAt?._seconds)}
                   </div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
@@ -123,17 +130,7 @@ const OrderList = ({
                   </div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
-                  <select 
-                    value={order.status}
-                    onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                    className="block w-32 py-1 px-2 text-sm border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="preparing">Preparing</option>
-                    <option value="ready">Ready</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
+                  <div className="text-sm text-gray-900">{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
@@ -145,31 +142,31 @@ const OrderList = ({
                     >
                       <Eye size={16} className="mr-1" /> View
                     </Button>
-                    <Button
+                    { (order.status !== 'delivered' && order.status !== 'ready' && order.status !== 'cancelled') && <Button
                       variant="secondary"
                       size="sm"
                       onClick={() => onEdit(order)}
                       className="flex items-center"
                     >
                       <Edit size={16} className="mr-1" /> Edit
-                    </Button>
-                    <Button
+                    </Button> }
+                    { (order.status !== 'delivered' && order.status !== 'ready' && order.status !== 'cancelled') && <Button
                       variant="danger"
                       size="sm"
                       onClick={() => onDeleteOrder(order.id)}
                       className="flex items-center"
                     >
                       <Trash2 size={16} className="mr-1" /> Delete
-                    </Button>
+                    </Button> }
                   </div>
                 </td>
               </tr>
             ))}
             
-            {sortedOrders.length === 0 && (
+            {ordersError?.length > 0 || sortedOrders.length === 0 && (
               <tr>
                 <td colSpan={7} className="px-4 py-4 text-sm text-gray-500 text-center">
-                  No orders found
+                  {ordersError?.length > 0 ? ordersError : 'No orders found'}
                 </td>
               </tr>
             )}

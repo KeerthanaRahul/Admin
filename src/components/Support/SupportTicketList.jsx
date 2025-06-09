@@ -11,13 +11,14 @@ const SupportTicketList = ({
   onViewDetails,
   onEdit,
   onDelete,
+  supportError
 }) => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [problemTypeFilter, setProblemTypeFilter] = useState('all');
   
   const statusOptions = [
-    { value: 'all', label: 'All Statuses' },
+    { value: 'all', label: 'All Status' },
     { value: 'open', label: 'Open' },
     { value: 'in-progress', label: 'In Progress' },
     { value: 'resolved', label: 'Resolved' },
@@ -40,6 +41,12 @@ const SupportTicketList = ({
     { value: 'cleanliness', label: 'Cleanliness' },
     { value: 'other', label: 'Other' },
   ];
+
+  function convertSecondsToDate(seconds) {
+    const milliseconds = seconds * 1000;
+    const date = new Date(milliseconds);
+    return date.toDateString();
+  }
   
   const filteredTickets = tickets.filter(ticket => {
     if (statusFilter !== 'all' && ticket.status !== statusFilter) {
@@ -143,10 +150,10 @@ const SupportTicketList = ({
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {format(new Date(ticket.createdAt), 'MMM d, yyyy')}
+                    {ticket?.createdAt?._seconds ? convertSecondsToDate(ticket?.createdAt?._seconds) : ''}
                   </div>
                   <div className="text-sm text-gray-500">
-                    {format(new Date(ticket.createdAt), 'h:mm a')}
+                    {ticket?.createdAt?._seconds ? convertSecondsToDate(ticket?.createdAt?._seconds) : ''}
                   </div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -180,10 +187,10 @@ const SupportTicketList = ({
               </tr>
             ))}
             
-            {sortedTickets.length === 0 && (
+            {supportError?.length > 0 || sortedTickets.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-4 py-4 text-sm text-gray-500 text-center">
-                  No support tickets found
+                  {supportError?.length > 0 ? supportError :'No support tickets found'}
                 </td>
               </tr>
             )}

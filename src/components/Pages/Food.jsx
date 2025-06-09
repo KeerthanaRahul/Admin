@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useAppContext } from '../Context/AppContext';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import FoodItemCard from '../Food/FoodItemCard';
@@ -8,10 +7,12 @@ import { Plus, Filter } from 'lucide-react';
 import Select from '../ui/Select';
 import Loader from '../../CommonComponents/Loader/Loader';
 import { v4 as uuidv4 } from 'uuid';
+import ConfirmationModal from '../ui/ConfirmationModal';
+import ErrorModal from '../ui/ErrorModal';
+import SuccessModal from '../ui/SuccessModal';
 
 const Food = () => {
-  const { updateFoodItem, deleteFoodItem } = useAppContext();
-  let apiUrl = 'http://localhost:8082/api/v1/food'
+  let apiUrl = 'http://localhost:8082/api/v1/food';
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('all');
@@ -22,8 +23,17 @@ const Food = () => {
   const [foodItems, setFoodItems] = useState(false);
   const [foodItemsError, setFoodItemsError] = useState('');
   const [isAddFoodLoading, setIsAddFoodLoading] = useState(false);
-  const [addFoodError, setAddFoodError] = useState('');
+  const [isUpdateFoodLoading, setIsUpdateFoodLoading] = useState(false);
+  const [isDeleteFoodLoading, setIsDeleteFoodLoading] = useState(false);
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, item: null });
+  const [errorModal, setErrorModal] = useState({ isOpen: false, title: '', message: '' });
+  const [successModal, setSuccessModal] = useState({ isOpen: false, title: '', message: '' });
 
+  const availabilityOptions = [
+    { value: 'all', label: 'All Items' },
+    { value: 'available', label: 'Available Only' },
+    { value: 'unavailable', label: 'Unavailable Only' },
+  ];
 
   const getFoodItems = async() => {
     setIsLoading(true);
@@ -39,8 +49,6 @@ const Food = () => {
     }
   }
 
-  
-
   const handleFoodData = data => {
     const categories = data && ['all', ...new Set(data?.map(item => item.category))];
     const categoryOptions = data && categories?.map(cat => ({
@@ -51,8 +59,16 @@ const Food = () => {
     handleFilters(data)
   }
 
+  useEffect(() => {
+    foodItems && handleFilters(foodItems)
+  }, [categoryFilter])
+  
+  useEffect(() => {
+    foodItems && handleFilters(foodItems)
+  }, [availabilityFilter])
+
   const handleFilters = (data) => {
-    const filteredItems = data && data?.filter(item => {
+    const filteredItems = data?.filter(item => {
       if (categoryFilter !== 'all' && item.category !== categoryFilter) {
         return false;
       }
@@ -74,17 +90,6 @@ const Food = () => {
     getFoodItems();
   }, [])
   
-  
-  
-  
-  const availabilityOptions = [
-    { value: 'all', label: 'All Items' },
-    { value: 'available', label: 'Available Only' },
-    { value: 'unavailable', label: 'Unavailable Only' },
-  ];
-  
- 
-  
   const handleAddNew = () => {
     setEditingItem(null);
     setShowForm(true);
@@ -99,15 +104,26 @@ const Food = () => {
   };
   
   const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this item?')) {
-      deleteFoodItem(id);
+    const item = foodItems.find(item => item.id === id);
+    if (item) {
+      setDeleteModal({ isOpen: true, item });
     }
+  };
+
+  const confirmDelete = () => {
+    if (deleteModal.item) {
+      deleteFoodItem(deleteModal.item.id);
+      setDeleteModal({ isOpen: false, item: null });
+    }
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModal({ isOpen: false, item: null });
   };
 
   const addFoodItem = async(foodItem) => {
     let payload = foodItem;
     payload.id = uuidv4();
-    console.log(payload);
     setIsAddFoodLoading(true);
     try {
       await fetch(`${apiUrl}/addFood`, {
@@ -118,16 +134,92 @@ const Food = () => {
         body: JSON.stringify(payload),
       });
       getFoodItems();
+      setSuccessModal({
+        isOpen: true,
+        title: 'Item Added',
+        message: `"${foodItem.name}" has been successfully added to the menu.`
+      });
     } catch (error) {
-      setAddFoodError('Something went wrong. Please try again later.');
-      // setOpenLoginErrorDialog(true);
+      setErrorModal({
+        isOpen: true,
+        title: 'Add Failed',
+        message: 'Failed to add the menu item. Please try again.',
+        details: error instanceof Error ? error.message : 'Unknown error occurred'
+      });
     } finally {
       setIsAddFoodLoading(false)
     }
   }
 
-  const handleCategoryFilter = (e, data = foodItems) => {
-    setCategoryFilter(e);
+  const updateFoodItem = async(id, foodItem) => {
+    let payload = foodItem;
+    payload.id = id;
+    setIsUpdateFoodLoading(true);
+    try {
+      await fetch(`${apiUrl}/updateFood`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      getFoodItems();
+      setSuccessModal({
+        isOpen: true,
+        title: 'Item Updated',
+        message: `"${foodItem.name}" has been successfully updated.`
+      });
+    } catch (error) {
+      setErrorModal({
+        isOpen: true,
+        title: 'Update Failed',
+        message: 'Failed to update the menu item. Please try again.',
+        details: error instanceof Error ? error.message : 'Unknown error occurred'
+      });
+    } finally {
+      setIsUpdateFoodLoading(false)
+    }
+  }
+
+  const deleteFoodItem = async(id) => {
+    let payload = { id };
+    setIsDeleteFoodLoading(true);
+    try {
+      await fetch(`${apiUrl}/deleteFood`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      setSuccessModal({
+        isOpen: true,
+        title: 'Item Deleted',
+        message: `"${deleteModal.item.name}" has been successfully removed from the menu.`
+      });
+      getFoodItems();
+    } catch (error) {
+      setErrorModal({
+        isOpen: true,
+        title: 'Delete Failed',
+        message: 'Failed to delete the menu item. Please try again.',
+        details: error instanceof Error ? error.message : 'Unknown error occurred'
+      });
+    } finally {
+      setIsDeleteFoodLoading(false)
+    }
+  }
+
+  const closeErrorModal = () => {
+    setErrorModal({ isOpen: false, title: '', message: '' });
+  };
+
+  const closeSuccessModal = () => {
+    setSuccessModal({ isOpen: false, title: '', message: '' });
+  };
+
+  const handleCategoryFilter = (e, data = foodItems, type = 'categoryFilter') => {
+    type === 'categoryFilter' ? setCategoryFilter(e) : setAvailabilityFilter(e);
     handleFilters(data ? data : foodItems)
   }
   
@@ -148,7 +240,7 @@ const Food = () => {
   
   return (
     <div className="space-y-6">
-      {(isLoading || isAddFoodLoading) && <Loader showLoader={(isLoading || isAddFoodLoading)} />}
+      {(isLoading || isAddFoodLoading || isUpdateFoodLoading || isDeleteFoodLoading) && <Loader showLoader={(isLoading || isAddFoodLoading || isUpdateFoodLoading || isDeleteFoodLoading)} />}
       {showForm ? (
         <FoodForm
           initialData={editingItem || undefined}
@@ -176,29 +268,29 @@ const Food = () => {
                 {categoryOptions && <Select
                   options={categoryOptions && categoryOptions}
                   value={categoryFilter}
-                  onChange={handleCategoryFilter}
+                  onChange={(e) => handleCategoryFilter(e, foodItems, 'categoryFilter')}
                   className="w-full sm:w-40"
                 />}
                 {availabilityOptions && <Select
                   options={availabilityOptions && availabilityOptions}
                   value={availabilityFilter}
-                  onChange={setAvailabilityFilter}
+                  onChange={(e) => handleCategoryFilter(e, foodItems, 'availabilityFilter')}
                   className="w-full sm:w-40"
                 />}
               </div>
             </div>
             
-            {filteredItems?.length === 0 ? (
+            {filteredItems?.length === 0 || foodItemsError?.length > 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500">No menu items found</p>
-                <Button 
+                <p className="text-gray-500">{foodItemsError?.length > 0 ? foodItemsError :'No menu items found'}</p>
+                { !foodItemsError?.length > 0 && <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={handleAddNew}
                   className="mt-4"
                 >
                   Add Your First Item
-                </Button>
+                </Button>}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -215,6 +307,33 @@ const Food = () => {
           </Card>
         </>
       )}
+      <ConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={closeDeleteModal}
+        onConfirm={confirmDelete}
+        title="Delete Menu Item"
+        message={
+          deleteModal.item 
+            ? `Are you sure you want to delete "${deleteModal.item.name}"? This action cannot be undone and will remove the item from your menu permanently.`
+            : ''
+        }
+        confirmText="Delete Item"
+        cancelText="Cancel"
+        type="danger"
+      />
+      <ErrorModal
+        isOpen={errorModal.isOpen}
+        onClose={closeErrorModal}
+        title={errorModal.title}
+        message={errorModal.message}
+        details={errorModal.details}
+      />
+      <SuccessModal
+        isOpen={successModal.isOpen}
+        onClose={closeSuccessModal}
+        title={successModal.title}
+        message={successModal.message}
+      />
     </div>
   );
 };

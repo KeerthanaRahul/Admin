@@ -26,6 +26,12 @@ const SupportTicketDetails = ({
     return labels[type] || type;
   };
 
+  function convertSecondsToDate(seconds) {
+    const milliseconds = seconds * 1000;
+    const date = new Date(milliseconds);
+    return date.toDateString();
+  }
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -80,7 +86,7 @@ const SupportTicketDetails = ({
                       <Mail size={18} className="text-amber-600 mr-2" />
                       <div>
                         <p className="text-sm font-medium text-gray-500">Email</p>
-                        <p className="text-sm text-gray-900">{ticket.email}</p>
+                        <p className="text-sm text-gray-900">{ticket.customerEmail}</p>
                       </div>
                     </div>
                     
@@ -97,20 +103,20 @@ const SupportTicketDetails = ({
                       <div>
                         <p className="text-sm font-medium text-gray-500">Created</p>
                         <p className="text-sm text-gray-900">
-                          {format(new Date(ticket.createdAt), 'MMM d, yyyy h:mm a')}
+                          { ticket.createdAt._seconds ? convertSecondsToDate(ticket.createdAt._seconds) : ''}
                         </p>
                       </div>
                     </div>
                     
-                    <div className="flex items-center">
+                    { ticket?.updatedAt && <div className="flex items-center">
                       <Clock size={18} className="text-amber-600 mr-2" />
                       <div>
                         <p className="text-sm font-medium text-gray-500">Last Updated</p>
                         <p className="text-sm text-gray-900">
-                          {format(new Date(ticket.updatedAt), 'MMM d, yyyy h:mm a')}
+                          {ticket?.updatedAt?._seconds ? convertSecondsToDate(ticket?.updatedAt?._seconds) : ''}
                         </p>
                       </div>
-                    </div>
+                    </div> }
                   </div>
                 </div>
 
@@ -134,7 +140,7 @@ const SupportTicketDetails = ({
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-500 mb-2">Problem Description</p>
                       <div className="bg-white border border-gray-200 rounded-md p-3">
-                        <p className="text-sm text-gray-900 whitespace-pre-wrap">{ticket.description}</p>
+                        <p className="text-sm text-gray-900 whitespace-pre-wrap">{ticket.problemDesc}</p>
                       </div>
                     </div>
                   </div>
