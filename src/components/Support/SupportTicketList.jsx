@@ -166,14 +166,14 @@ const SupportTicketList = ({
                     >
                       <Eye size={16} className="mr-1" /> View
                     </Button>
-                    <Button
+                    {(ticket.status !== 'resolved' && ticket.status !== 'closed') && <Button
                       variant="secondary"
                       size="sm"
                       onClick={() => onEdit(ticket)}
                       className="flex items-center"
                     >
                       <Edit size={16} className="mr-1" /> Edit
-                    </Button>
+                    </Button>}
                     <Button
                       variant="danger"
                       size="sm"

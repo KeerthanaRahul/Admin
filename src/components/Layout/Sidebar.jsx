@@ -4,15 +4,16 @@ import {
   LayoutDashboard, 
   ShoppingBag, 
   Coffee, 
-  CalendarDays, 
+  MessageSquare, 
   Users,
   Settings, 
-  MessageSquare,
   LogOut 
 } from 'lucide-react';
+import { useAuth } from '../Context/AuthContext';
 
 const Sidebar = () => {
   const location = useLocation();
+  const { logout } = useAuth();
   
   const navItems = [
     { 
@@ -36,6 +37,10 @@ const Sidebar = () => {
       icon: <MessageSquare size={20} /> 
     }
   ];
+
+  const handleLogout = () => {
+    logout();
+  };
   
   return (
     <div className="bg-white h-full border-r border-gray-200 flex flex-col transition-all duration-300">
@@ -73,7 +78,10 @@ const Sidebar = () => {
       </nav>
       
       <div className="p-4 border-t border-gray-200">
-        <button className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-gray-900 w-full">
+        <button 
+          onClick={handleLogout}
+          className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 hover:text-gray-900 w-full"
+        >
           <LogOut size={20} className="mr-3 text-gray-500" />
           Sign Out
         </button>

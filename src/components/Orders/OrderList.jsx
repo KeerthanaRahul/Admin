@@ -11,7 +11,9 @@ const OrderList = ({
   onEdit,
   onStatusChange,
   onDeleteOrder,
-  ordersError
+  ordersError,
+  onCancelOrder,
+  onReOrder
 }) => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortOrder, setSortOrder] = useState('newest');
@@ -155,9 +157,26 @@ const OrderList = ({
                       size="sm"
                       onClick={() => onDeleteOrder(order.id)}
                       className="flex items-center"
+                      style={{ display: 'none' }}
                     >
                       <Trash2 size={16} className="mr-1" /> Delete
                     </Button> }
+                    {(order.status !== 'delivered' && order.status !== 'cancelled') && <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => onCancelOrder(order.id)}
+                      className="flex items-center"
+                    >
+                      <Trash2 size={16} className="mr-1" /> Cancel
+                    </Button>}
+                    {(order.status === 'delivered' || order.status === 'cancelled') && <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => onReOrder(order)}
+                      className="flex items-center"
+                    >
+                      <Edit size={16} className="mr-1" /> Re-Order
+                    </Button>}
                   </div>
                 </td>
               </tr>

@@ -9,11 +9,13 @@ import ErrorModal from '../ui/ErrorModal';
 import SuccessModal from '../ui/SuccessModal';
 import Loader from '../../CommonComponents/Loader/Loader';
 import { v4 as uuidv4 } from 'uuid';
+import ConfirmationModal from '../ui/ConfirmationModal';
 
 const Orders = () => {
   let apiUrl = 'http://localhost:8082/api/v1/orders';
-  const { updateOrderStatus, deleteOrder } = useAppContext();
+  const { updateOrderStatus } = useAppContext();
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedReOrder, setSelectedReOrder] = useState(null);
   const [editingOrder, setEditingOrder] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [isAddOrderLoading, setIsAddOrderLoading] = useState(false);
@@ -22,8 +24,12 @@ const Orders = () => {
   const [ordersError, setOrdersError] = useState('');
   const [isUpdateOrderLoading, setIsUpdateOrderLoading] = useState(false);
   const [isDeleteOrderLoading, setIsDeleteOrderLoading] = useState(false);
+  const [isCancelOrderLoading, setIsCancelOrderLoading] = useState(false);
   const [errorModal, setErrorModal] = useState({ isOpen: false, title: '', message: '' });
   const [successModal, setSuccessModal] = useState({ isOpen: false, title: '', message: '' });
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, item: null });
+  const [cancelModal, setCancelModal] = useState({ isOpen: false, item: null });
+  
   
   const handleViewDetails = (order) => {
     setSelectedOrder(order);
@@ -48,12 +54,115 @@ const Orders = () => {
   };
   
   const handleDeleteOrder = (orderId) => {
-    if (window.confirm('Are you sure you want to delete this order?')) {
-      deleteOrder(orderId);
-      if (selectedOrder && selectedOrder.id === orderId) {
-        setSelectedOrder(null);
-      }
+    const item = orders.find(item => item.id === orderId);
+    if (item) {
+      setDeleteModal({ isOpen: true, item });
     }
+  };
+
+  const handleCancelOrder = orderId => {
+    const item = orders.find(item => item.id === orderId);
+    if (item) {
+      setCancelModal({ isOpen: true, item });
+    }
+  }
+
+  const deleteOrder = async(id) => {
+    let payload = { id };
+    setIsDeleteOrderLoading(true);
+    try {
+      const res = await fetch(`${apiUrl}/deleteOrder`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      if(!res.ok) {
+        setErrorModal({
+          isOpen: true,
+          title: 'Delete Failed',
+          message: 'Failed to delete the order. Please try again.',
+          details: error instanceof Error ? error.message : 'Unknown error occurred'
+        });
+      } else {
+        setSuccessModal({
+          isOpen: true,
+          title: 'Order Deleted',
+          message: `Order has been successfully removed.`
+        });
+      }
+      getOrders();
+    } catch (error) {
+      setErrorModal({
+        isOpen: true,
+        title: 'Delete Failed',
+        message: 'Failed to delete the order. Please try again.',
+        details: error instanceof Error ? error.message : 'Unknown error occurred'
+      });
+    } finally {
+      setIsDeleteOrderLoading(false)
+    }
+  }
+
+  const cancelOrder = async (id) => {
+    let payload = { id };
+    setIsCancelOrderLoading(true);
+    try {
+      const res = await fetch(`${apiUrl}/cancelOrder`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      if(!res.ok) {
+        setErrorModal({
+          isOpen: true,
+          title: 'Cancel Order Failed',
+          message: 'Failed to cancel the order. Please try again.',
+          details: error instanceof Error ? error.message : 'Unknown error occurred'
+        });
+      } else {
+        setSuccessModal({
+          isOpen: true,
+          title: 'Order Cancelled',
+          message: `Order has been successfully cancelled.`
+        });
+      }
+      getOrders();
+    } catch (error) {
+      setErrorModal({
+        isOpen: true,
+        title: 'Delete Failed',
+        message: 'Failed to delete the order. Please try again.',
+        details: error instanceof Error ? error.message : 'Unknown error occurred'
+      });
+    } finally {
+      setIsCancelOrderLoading(false)
+    }
+  }
+
+  const confirmDelete = () => {
+    if (deleteModal.item) {
+      deleteOrder(deleteModal.item.id);
+      setDeleteModal({ isOpen: false, item: null });
+    }
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModal({ isOpen: false, item: null });
+  };
+
+  const confirmCancel = () => {
+    if (cancelModal.item) {
+      cancelOrder(cancelModal.item.id);
+      setCancelModal({ isOpen: false, item: null });
+    }
+  };
+
+  const closeCancelModal = () => {
+    setCancelModal({ isOpen: false, item: null });
   };
 
   const getOrders = async() => {
@@ -112,6 +221,21 @@ const Orders = () => {
     }
   }
 
+  const handleReOrder = order => {
+    setSelectedReOrder(order);
+  }
+
+  const confirmReOrder = () => {
+    if (selectedReOrder) {
+      let orderData = {
+        ...selectedReOrder,
+        status: 'pending'
+      }
+      addOrder(orderData)
+      setSelectedReOrder(null);
+    }
+  };
+
   const updateOrder = async (id, order) => {
     let payload = order;
     payload.id = id;
@@ -168,6 +292,7 @@ const Orders = () => {
   
   const handleCloseDetails = () => {
     setSelectedOrder(null);
+    setSelectedReOrder(null);
   };
 
   const closeErrorModal = () => {
@@ -180,7 +305,7 @@ const Orders = () => {
   
   return (
     <div className="space-y-6">
-      {(isLoading || isAddOrderLoading || isUpdateOrderLoading || isDeleteOrderLoading) && <Loader showLoader={(isLoading || isAddOrderLoading || isUpdateOrderLoading || isDeleteOrderLoading)} />}
+      {(isLoading || isAddOrderLoading || isUpdateOrderLoading || isDeleteOrderLoading || isCancelOrderLoading) && <Loader showLoader={(isLoading || isAddOrderLoading || isUpdateOrderLoading || isDeleteOrderLoading || isCancelOrderLoading)} />}
       {showForm ? (
         <OrderForm
           initialData={editingOrder || undefined}
@@ -204,19 +329,52 @@ const Orders = () => {
             onEdit={handleEdit}
             onStatusChange={handleStatusChange}
             onDeleteOrder={handleDeleteOrder}
+            onCancelOrder={handleCancelOrder}
+            onReOrder={handleReOrder}
             ordersError={ordersError}
           />
         </>
       )}
       
-      {selectedOrder && (
+      {(selectedOrder || selectedReOrder) && (
         <OrderDetails
-          order={selectedOrder}
+          order={selectedReOrder || selectedOrder}
           onClose={handleCloseDetails}
           onStatusChange={handleStatusChange}
           onEdit={handleEdit}
+          reOrder={selectedReOrder ? true : false}
+          selectedReOrder={selectedReOrder}
+          onReOrder={confirmReOrder}
         />
       )}
+      <ConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={closeDeleteModal}
+        onConfirm={confirmDelete}
+        title="Delete Order"
+        message={
+          deleteModal.item 
+            ? `Are you sure you want to delete this order? This action cannot be undone and will remove the order permanently.`
+            : ''
+        }
+        confirmText="Delete Order"
+        cancelText="Cancel"
+        type="danger"
+      />
+      <ConfirmationModal
+        isOpen={cancelModal.isOpen}
+        onClose={closeCancelModal}
+        onConfirm={confirmCancel}
+        title="Cancel Order"
+        message={
+          cancelModal.item 
+            ? `Are you sure you want to cancel this order? This action cannot be undone and will cancel the order permanently.`
+            : ''
+        }
+        confirmText="Cancel Order"
+        cancelText="Close"
+        type="danger"
+      />
       <ErrorModal
         isOpen={errorModal.isOpen}
         onClose={closeErrorModal}

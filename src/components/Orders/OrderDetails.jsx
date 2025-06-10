@@ -9,7 +9,10 @@ const OrderDetails= ({
   order,
   onClose,
   onStatusChange,
-  onEdit
+  onEdit,
+  selectedReOrder,
+  reOrder,
+  onReOrder
 }) => {
   const handleStatusChange = (e) => {
     onStatusChange(order.id, e.target.value);
@@ -58,8 +61,12 @@ const OrderDetails= ({
                   
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                      <p className="text-sm font-medium text-gray-500">Customer</p>
+                      <p className="text-sm font-medium text-gray-500">Customer Name</p>
                       <p className="text-sm text-gray-900">{order.customerName}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Customer Email</p>
+                      <p className="text-sm text-gray-900">{order.customerEmail}</p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-500">Table</p>
@@ -79,7 +86,7 @@ const OrderDetails= ({
                     </div>}
                   </div>
                   
-                  <div className="mb-4">
+                  { (order.status !== 'delivered' && order.status !== 'cancelled') ? <div className="mb-4">
                     <p className="text-sm font-medium text-gray-500 mb-2">Order Status</p>
                     <select
                       value={order.status}
@@ -92,7 +99,10 @@ const OrderDetails= ({
                       <option value="delivered">Delivered</option>
                       <option value="cancelled">Cancelled</option>
                     </select>
-                  </div>
+                  </div> : <div>
+                      <p className="text-sm font-medium text-gray-500">Order Status</p>
+                      <p className="text-sm text-gray-900">{order.status}</p>
+                    </div>  }
                 </div>
                 
                 <div className="mt-4">
@@ -151,12 +161,19 @@ const OrderDetails= ({
           </div>
           
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-          { (order.status !== 'delivered' && order.status !== 'ready' && order.status !== 'cancelled') && <Button
+          { (!reOrder) && <Button
               variant="primary"
               onClick={() => onEdit(order)}
               className="w-full sm:w-auto sm:ml-3"
             >
               Edit Order
+            </Button> }
+            { (reOrder) && <Button
+              variant="primary"
+              onClick={() => onReOrder(order)}
+              className="w-full sm:w-auto sm:ml-3"
+            >
+              Re-Order
             </Button> }
             <Button
               variant="primary"

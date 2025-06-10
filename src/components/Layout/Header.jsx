@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
-import { Menu, Bell, Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Menu, Bell, Search, LogOut, User } from 'lucide-react';
+import { useAuth } from '../Context/AuthContext';
 
 const Header = ({ toggleSidebar, title }) => {
   const [notifications] = useState(3);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
   
   return (
     <header className="bg-white border-b border-gray-200 z-10">
@@ -20,43 +30,46 @@ const Header = ({ toggleSidebar, title }) => {
           </div>
           
           <div className="flex items-center space-x-4">
-            <div className="relative hidden md:block">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <Search size={18} className="text-gray-400" />
-              </div>
-              <input
-                type="text"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full pl-10 p-2"
-                placeholder="Search..."
-              />
-            </div>
-            
             <div className="relative">
-              <button 
-                className="p-1 rounded-full text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-500"
               >
-                <Bell size={20} />
-                {notifications > 0 && (
-                  <span className="absolute top-0 right-0 block h-4 w-4 rounded-full bg-red-500 text-xs text-white text-center">
-                    {notifications}
-                  </span>
-                )}
+                <div className="h-8 w-8 rounded-full bg-amber-500 flex items-center justify-center">
+                  <User size={18} className="text-white" />
+                </div>
+                <span className="ml-2 text-sm font-medium text-gray-700 hidden md:block">
+                  {user?.name || 'Admin User'}
+                </span>
               </button>
-            </div>
-            
-            <div className="flex items-center">
-              <img
-                className="h-8 w-8 rounded-full border-2 border-amber-500"
-                src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg"
-                alt="User"
-              />
-              <span className="ml-2 text-sm font-medium text-gray-700 hidden md:block">
-                Admin User
-              </span>
+
+              {showUserMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                  <div className="px-4 py-2 border-b border-gray-100">
+                    <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                    <p className="text-sm text-gray-500">{user?.email}</p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <LogOut size={16} className="mr-2" />
+                    Sign Out
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Overlay to close user menu */}
+      {showUserMenu && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setShowUserMenu(false)}
+        />
+      )}
     </header>
   );
 };
