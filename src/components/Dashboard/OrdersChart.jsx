@@ -6,6 +6,12 @@ import { format, startOfDay, subDays, isWithinInterval } from 'date-fns';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+function convertSecondsToDate(seconds) {
+  const milliseconds = seconds * 1000;
+  const date = new Date(milliseconds);
+  return date.toDateString();
+}
+
 const OrdersChart = ({ orders }) => {
   const [chartData, setChartData] = useState({
     labels: [],
@@ -34,7 +40,7 @@ const OrdersChart = ({ orders }) => {
     const revenues = Array(days).fill(0);
     
     orders.forEach(order => {
-      const orderDate = new Date(order.createdAt);
+      const orderDate = new Date(convertSecondsToDate(order.createdAt?._seconds));
       
       for (let i = 0; i < days; i++) {
         const dayStart = startOfDay(subDays(today, days - 1 - i));

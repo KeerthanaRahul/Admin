@@ -27,11 +27,6 @@ const OrderList = ({
     { value: 'cancelled', label: 'Cancelled' },
   ];
   
-  const sortOptions = [
-    { value: 'newest', label: 'Newest First' },
-    { value: 'oldest', label: 'Oldest First' },
-  ];
-  
   const filteredOrders = orders.filter(order => 
     statusFilter === 'all' || order.status === statusFilter
   );
@@ -60,12 +55,6 @@ const OrderList = ({
             options={statusOptions}
             value={statusFilter}
             onChange={setStatusFilter}
-            className="w-full sm:w-40"
-          />
-          <Select
-            options={sortOptions}
-            value={sortOrder}
-            onChange={(value) => setSortOrder(value)}
             className="w-full sm:w-40"
           />
         </div>

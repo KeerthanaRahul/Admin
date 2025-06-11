@@ -5,6 +5,12 @@ import { SupportStatusBadge, SupportPriorityBadge } from '../ui/Badge';
 import { format } from 'date-fns';
 import Button from '../ui/Button';
 
+function convertSecondsToDate(seconds) {
+  const milliseconds = seconds * 1000;
+  const date = new Date(milliseconds);
+  return date.toDateString();
+}
+
 const RecentSupportTickets= ({ tickets }) => {
   const navigate = useNavigate();
   const sortedTickets = [...tickets]
@@ -53,7 +59,7 @@ const RecentSupportTickets= ({ tickets }) => {
                 Status
               </th>
               <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Created
+                Created 
               </th>
             </tr>
           </thead>
@@ -80,7 +86,7 @@ const RecentSupportTickets= ({ tickets }) => {
                 </td>
                 <td className="px-3 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {format(new Date(ticket.createdAt), 'MMM d, h:mm a')}
+                    {convertSecondsToDate(ticket.createdAt?._seconds)}
                   </div>
                 </td>
               </tr>

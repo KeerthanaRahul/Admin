@@ -9,14 +9,14 @@ const StatsCard = ({
   className = '',
 }) => {
   return (
-    <Card className={`${className}`}>
+    <Card className={`transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${className}`}>
       <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">{value}</p>
+        <div className="flex-1">
+          <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
+          <p className="text-2xl font-bold text-gray-900 mb-2">{value}</p>
           
           {trend && (
-            <div className="mt-2 flex items-center">
+            <div className="flex items-center">
               <span className={`text-sm font-medium ${trend.positive ? 'text-green-600' : 'text-red-600'}`}>
                 {trend.positive ? '+' : ''}{trend.value}%
               </span>
@@ -25,7 +25,7 @@ const StatsCard = ({
           )}
         </div>
         
-        <div className="p-3 bg-amber-100 rounded-lg">
+        <div className="p-3 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl">
           <div className="text-amber-700">{icon}</div>
         </div>
       </div>

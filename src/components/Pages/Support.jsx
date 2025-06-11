@@ -100,7 +100,6 @@ const Support = () => {
       const res = await fetch(`${apiUrl}/getSupport`);
       const data = await res.json();
       setSupportTickets(data?.supportList)
-      // handleFoodData(data?.foodList);
       } catch (error) {
       setSupportError('Something went wrong. Please try again later.');
     } finally {

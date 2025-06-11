@@ -6,9 +6,17 @@ import { format } from 'date-fns';
 import Button from '../ui/Button';
 
 const RecentOrders = ({ orders }) => {
+
+  function convertSecondsToDate(seconds) {
+    const milliseconds = seconds * 1000;
+    const date = new Date(milliseconds);
+    return date.toDateString();
+  }
+
+
   const navigate = useNavigate();
   const sortedOrders = [...orders]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .sort((a, b) => new Date(convertSecondsToDate(b.createdAt._seconds)).getTime() - new Date(convertSecondsToDate(a.createdAt._seconds)).getTime())
     .slice(0, 5);
   
   return (
@@ -65,7 +73,7 @@ const RecentOrders = ({ orders }) => {
                 </td>
                 <td className="px-3 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {format(new Date(order.createdAt), 'MMM d, h:mm a')}
+                    {convertSecondsToDate(order.createdAt._seconds)}
                   </div>
                 </td>
                 <td className="px-3 py-4 whitespace-nowrap">
