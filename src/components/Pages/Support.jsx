@@ -58,26 +58,30 @@ const Support = () => {
     let payload = { id };
     setIsDeleteSupportLoading(true);
     try {
-      await fetch(`${apiUrl}/deleteSupport`, {
+      const res = await fetch(`${apiUrl}/deleteSupport`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
-      setSuccessModal({
-        isOpen: true,
-        title: 'Support Deleted',
-        message: `Support has been successfully removed.`
-      });
+      if(!res.ok) {
+        setErrorModal({
+          isOpen: true,
+          title: 'Delete Failed',
+          message: 'Failed to delete the support. Please try again.',
+          details: error instanceof Error ? error.message : 'Unknown error occurred'
+        });
+      } else {
+        setSuccessModal({
+          isOpen: true,
+          title: 'Support Deleted',
+          message: `Support has been successfully removed.`
+        });
+      }
       getSupports();
     } catch (error) {
-      setErrorModal({
-        isOpen: true,
-        title: 'Delete Failed',
-        message: 'Failed to delete the support. Please try again.',
-        details: error instanceof Error ? error.message : 'Unknown error occurred'
-      });
+      
     } finally {
       setIsDeleteSupportLoading(false)
     }
@@ -117,7 +121,7 @@ const Support = () => {
     payload.id = uuidv4();
     setIsAddSupportLoading(true);
     try {
-      await fetch(`${apiUrl}/addSupport`, {
+      const res = await fetch(`${apiUrl}/addSupport`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -125,11 +129,20 @@ const Support = () => {
         body: JSON.stringify(payload),
       });
       getSupports();
-      setSuccessModal({
-        isOpen: true,
-        title: 'Support Added',
-        message: `Support has been successfully added.`
-      });
+      if(!res.ok) {
+        setErrorModal({
+          isOpen: true,
+          title: 'Add Failed',
+          message: 'Failed to add support. Please try again.',
+          details: error instanceof Error ? error.message : 'Unknown error occurred'
+        });
+      } else {
+        setSuccessModal({
+          isOpen: true,
+          title: 'Support Added',
+          message: `Support has been successfully added.`
+        });
+      }
     } catch (error) {
       setErrorModal({
         isOpen: true,
@@ -147,7 +160,7 @@ const Support = () => {
     payload.id = id;
     setIsUpdateSupportLoading(true);
     try {
-      await fetch(`${apiUrl}/updateSupport`, {
+      const res = await fetch(`${apiUrl}/updateSupport`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -155,11 +168,20 @@ const Support = () => {
         body: JSON.stringify(payload),
       });
       getSupports();
-      setSuccessModal({
-        isOpen: true,
-        title: 'Support Updated',
-        message: `Support has been successfully updated.`
-      });
+      if(!res.ok) {
+        setErrorModal({
+          isOpen: true,
+          title: 'Update Failed',
+          message: 'Failed to update the support. Please try again.',
+          details: error instanceof Error ? error.message : 'Unknown error occurred'
+        });
+      } else {
+        setSuccessModal({
+          isOpen: true,
+          title: 'Support Updated',
+          message: `Support has been successfully updated.`
+        });
+      }
     } catch (error) {
       setErrorModal({
         isOpen: true,

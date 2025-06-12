@@ -126,19 +126,28 @@ const Food = () => {
     payload.id = uuidv4();
     setIsAddFoodLoading(true);
     try {
-      await fetch(`${apiUrl}/addFood`, {
+      const res = await fetch(`${apiUrl}/addFood`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
+      if(!res.ok) {
+        setErrorModal({
+          isOpen: true,
+          title: 'Add Failed',
+          message: 'Failed to add the menu item. Please try again.',
+          details: error instanceof Error ? error.message : 'Unknown error occurred'
+        });
+      } else {
+        setSuccessModal({
+          isOpen: true,
+          title: 'Item Added',
+          message: `"${foodItem.name}" has been successfully added to the menu.`
+        });
+      }
       getFoodItems();
-      setSuccessModal({
-        isOpen: true,
-        title: 'Item Added',
-        message: `"${foodItem.name}" has been successfully added to the menu.`
-      });
     } catch (error) {
       setErrorModal({
         isOpen: true,
@@ -156,19 +165,28 @@ const Food = () => {
     payload.id = id;
     setIsUpdateFoodLoading(true);
     try {
-      await fetch(`${apiUrl}/updateFood`, {
+      const res = await fetch(`${apiUrl}/updateFood`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
+      if(!res.ok) {
+        setErrorModal({
+          isOpen: true,
+          title: 'Update Failed',
+          message: 'Failed to update the menu item. Please try again.',
+          details: error instanceof Error ? error.message : 'Unknown error occurred'
+        });
+      } else {
+        setSuccessModal({
+          isOpen: true,
+          title: 'Item Updated',
+          message: `"${foodItem.name}" has been successfully updated.`
+        });
+      }
       getFoodItems();
-      setSuccessModal({
-        isOpen: true,
-        title: 'Item Updated',
-        message: `"${foodItem.name}" has been successfully updated.`
-      });
     } catch (error) {
       setErrorModal({
         isOpen: true,
@@ -185,18 +203,27 @@ const Food = () => {
     let payload = { id };
     setIsDeleteFoodLoading(true);
     try {
-      await fetch(`${apiUrl}/deleteFood`, {
+      const res = await fetch(`${apiUrl}/deleteFood`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
-      setSuccessModal({
-        isOpen: true,
-        title: 'Item Deleted',
-        message: `"${deleteModal.item.name}" has been successfully removed from the menu.`
-      });
+      if(!res.ok) {
+        setErrorModal({
+          isOpen: true,
+          title: 'Delete Failed',
+          message: 'Failed to delete the menu item. Please try again.',
+          details: error instanceof Error ? error.message : 'Unknown error occurred'
+        });
+      } else {
+        setSuccessModal({
+          isOpen: true,
+          title: 'Item Deleted',
+          message: `"${deleteModal.item.name}" has been successfully removed from the menu.`
+        });
+      }
       getFoodItems();
     } catch (error) {
       setErrorModal({
