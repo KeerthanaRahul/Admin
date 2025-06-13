@@ -31,7 +31,7 @@ const FoodItemCard = ({ foodItem, onEdit, onDelete }) => {
       <div className="flex-1">
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-lg font-semibold text-gray-800">{foodItem.name}</h3>
-          <span className="text-lg font-bold text-amber-700">${foodItem.price.toFixed(2)}</span>
+          <span className="text-lg font-bold text-amber-700">₹{foodItem.price.toFixed(2)}</span>
         </div>
         
         <div className="flex flex-wrap gap-2 mb-2">

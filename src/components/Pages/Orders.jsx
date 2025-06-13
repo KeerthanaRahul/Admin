@@ -185,6 +185,7 @@ const Orders = () => {
   const addOrder = async (orderData) => {
     let payload = orderData;
     payload.id = uuidv4();
+    payload.from = 'admin';
     setIsAddOrderLoading(true);
     try {
       const res = await fetch(`${apiUrl}/addOrder`, {
@@ -207,6 +208,8 @@ const Orders = () => {
           title: 'Order Added',
           message: `Order has been successfully added.`
         });
+        const data = await res.json();
+        window.location.href = data?.data?.link_url;
       }
       getOrders();
     } catch (error) {

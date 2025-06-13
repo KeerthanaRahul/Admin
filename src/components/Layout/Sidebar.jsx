@@ -7,7 +7,8 @@ import {
   MessageSquare, 
   Users,
   Settings, 
-  LogOut 
+  LogOut, 
+  Star
 } from 'lucide-react';
 import { useAuth } from '../Context/AuthContext';
 
@@ -35,6 +36,11 @@ const Sidebar = () => {
       path: '/support', 
       name: 'Support', 
       icon: <MessageSquare size={20} /> 
+    },
+    { 
+      path: '/feedback', 
+      name: 'Feedback', 
+      icon: <Star size={20} /> 
     }
   ];
 

@@ -114,7 +114,7 @@ const OrderList = ({
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
-                    ${order.totalAmount.toFixed(2)}
+                  ₹{order.totalAmount.toFixed(2)}
                   </div>
                   <div className="text-sm text-gray-500">
                     {order.items.length} {order.items.length === 1 ? 'item' : 'items'}

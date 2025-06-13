@@ -10,6 +10,7 @@ import Login from './components/Pages/Login';
 import Signup from './components/Pages/Signup';
 import { AuthProvider } from './components/Context/AuthContext';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
+import Feedback from './components/Pages/Feedback';
 
 function App() {
   return (
@@ -51,6 +52,13 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <Support />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/feedback" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Feedback />
                 </Layout>
               </ProtectedRoute>
             } />

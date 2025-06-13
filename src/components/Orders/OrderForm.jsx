@@ -14,6 +14,7 @@ const OrderForm = ({
 }) => {
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
+  const [customerPhoneNumber, setCustomerPhoneNumber] = useState('');
   const [tableNumber, setTableNumber] = useState('');
   const [status, setStatus] = useState('pending');
   const [items, setItems] = useState([]);
@@ -27,6 +28,7 @@ const OrderForm = ({
     if (initialData) {
       setCustomerName(initialData.customerName);
       setCustomerEmail(initialData.customerEmail);
+      setCustomerPhoneNumber(initialData.customerPhoneNumber);
       setTableNumber(initialData.tableNumber);
       setStatus(initialData.status);
       setItems(initialData.items.map(item => ({
@@ -85,6 +87,10 @@ const OrderForm = ({
     if (!customerName.trim()) {
       newErrors.customerName = 'Customer name is required';
     }
+
+    if (!customerPhoneNumber.trim()) {
+      newErrors.customerPhoneNumber = 'Customer Phone Number is required';
+    }
     
     if (!customerEmail.trim()) {
       newErrors.customerEmail = 'Email is required';
@@ -123,6 +129,7 @@ const OrderForm = ({
     onSubmit({
       customerName,
       customerEmail,
+      customerPhoneNumber,
       tableNumber,
       status,
       items: validItems,
@@ -197,7 +204,7 @@ const OrderForm = ({
             fullWidth
           />
         </div>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <Input
           label="Email Address"
           id="customerEmail"
@@ -207,8 +214,19 @@ const OrderForm = ({
           placeholder="Email address"
           error={errors.customerEmail}
           fullWidth
-          className="mb-4"
         />
+
+        <Input
+          label="Phone Number"
+          id="customerPhoneNumber"
+          type="customerPhoneNumber"
+          value={customerPhoneNumber}
+          onChange={(e) => setCustomerPhoneNumber(e.target.value)}
+          placeholder="Phone Number"
+          error={errors.customerPhoneNumber}
+          fullWidth
+        />
+        </div>
         
         <Select
           label="Order Status"
@@ -216,7 +234,7 @@ const OrderForm = ({
           value={status}
           onChange={(value) => setStatus(value)}
           options={statusOptions}
-          className="mb-4"
+          className="mb-4 w-64"
           fullWidth
         />
 

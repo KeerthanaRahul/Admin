@@ -42,7 +42,7 @@ const FoodForm = ({ initialData, onSubmit, onCancel }) => {
   ];
 
   const moodOptions = [
-    'Morning',
+    'Healthy',
     'Relaxing',
     'Energizing',
     'Indulgent',
@@ -50,6 +50,8 @@ const FoodForm = ({ initialData, onSubmit, onCancel }) => {
     'Light',
     'Sweet',
     'Savory',
+    'Happy',
+    'Focused',
   ];
   
   const validateForm = () => {
@@ -120,7 +122,7 @@ const FoodForm = ({ initialData, onSubmit, onCancel }) => {
           />
           
           <Input
-            label="Price ($)"
+            label="Price (₹)"
             id="price"
             type="number"
             step="0.01"
@@ -142,7 +144,7 @@ const FoodForm = ({ initialData, onSubmit, onCancel }) => {
           rows={3}
           error={errors.description}
           fullWidth
-          className="mb-4"
+          className="mb-4 w-full"
         />
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -154,6 +156,7 @@ const FoodForm = ({ initialData, onSubmit, onCancel }) => {
             options={categoryOptions}
             error={errors.category}
             fullWidth
+            className="w-full"
           />
           
           <Input

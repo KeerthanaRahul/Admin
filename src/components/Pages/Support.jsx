@@ -13,8 +13,7 @@ import ConfirmationModal from '../ui/ConfirmationModal';
 
 const Support = () => {
   const { 
-    updateSupportTicketStatus,
-    deleteSupportTicket 
+    updateSupportTicketStatus 
   } = useAppContext();
   
   const [showForm, setShowForm] = useState(false);
@@ -115,10 +114,19 @@ const Support = () => {
     getSupports();
   }, [])
   
+  const getEstimatedResolution = (priority) => {
+    switch (priority) {
+      case 'high': return 'Within 5-10 minutes';
+      case 'medium': return 'Within 15-30 minutes';
+      case 'low': return 'Within 30-60 minutes';
+      default: return 'Within 30 minutes';
+    }
+  };
 
   const addSupportTicket = async (ticket) => {
     let payload = ticket;
     payload.id = uuidv4();
+    payload.estimatedResolution = getEstimatedResolution(ticket.priority)
     setIsAddSupportLoading(true);
     try {
       const res = await fetch(`${apiUrl}/addSupport`, {

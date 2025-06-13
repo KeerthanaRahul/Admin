@@ -76,4 +76,43 @@ export const SupportPriorityBadge = ({ priority }) => {
   return <Badge variant={getVariant()}>{getLabel()}</Badge>;
 };
 
+export const FeedbackStatusBadge = ({ status }) => {
+  const getVariant = () => {
+    switch (status) {
+      case 'new': return 'warning';
+      case 'reviewed': return 'primary';
+      case 'responded': return 'success';
+      case 'archived': return 'info';
+      default: return 'info';
+    }
+  };
+  
+  const getLabel = () => {
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  };
+  
+  return <Badge variant={getVariant()}>{getLabel()}</Badge>;
+};
+
+export const FeedbackCategoryBadge = ({ category }) => {
+  const getVariant = () => {
+    switch (category) {
+      case 'food-quality': return 'primary';
+      case 'service': return 'info';
+      case 'ambiance': return 'success';
+      case 'value': return 'warning';
+      case 'cleanliness': return 'danger';
+      case 'overall': return 'primary';
+      default: return 'info';
+    }
+  };
+  
+  const getLabel = () => {
+    return category === 'food-quality' ? 'Food Quality' :
+           category.charAt(0).toUpperCase() + category.slice(1);
+  };
+  
+  return <Badge variant={getVariant()}>{getLabel()}</Badge>;
+};
+
 export default Badge;

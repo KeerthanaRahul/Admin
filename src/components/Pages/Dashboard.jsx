@@ -13,7 +13,8 @@ import {
   Coffee,
   Star,
   Calendar,
-  Target
+  Target,
+  ThumbsUp
 } from 'lucide-react';
 import StatsCard from '../Dashboard/StatsCard';
 import OrderStatusDistribution from '../Dashboard/OrderStatusDistribution';
@@ -24,8 +25,12 @@ import RecentOrders from '../Dashboard/RecentOrders';
 import RecentSupportTickets from '../Dashboard/RecentSupportTickets';
 import OrdersChart from '../Dashboard/OrdersChart';
 import Loader from '../../CommonComponents/Loader/Loader';
+import FeedbackMetrics from '../Dashboard/FeedbackMetrics';
+import RecentFeedbacks from '../Dashboard/RecentFeedbacks';
 
 const Dashboard = () => {
+
+  const { customerFeedbacks, dashboardStats } = useAppContext();
 
   const [foodItems, setFoodItems] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -227,6 +232,18 @@ const Dashboard = () => {
           icon={<AlertTriangle size={24} />}
           className="bg-gradient-to-br from-red-100 to-red-50 border-red-300"
         />
+        <StatsCard
+          title="Customer Feedbacks"
+          value={dashboardStats.totalFeedbacks}
+          icon={<Star size={24} />}
+          className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200"
+        />
+        <StatsCard
+          title="Avg Rating"
+          value={`${dashboardStats.averageRating.toFixed(1)}/5`}
+          icon={<ThumbsUp size={24} />}
+          className="bg-gradient-to-br from-yellow-50 to-amber-50 border-yellow-200"
+        />
       </div>
 
       {/* Charts and Analytics */}
@@ -242,11 +259,13 @@ const Dashboard = () => {
 
       {/* Popular Items */}
       <PopularItems orders={orders} foodItems={foodItems} />
+      <FeedbackMetrics feedbacks={customerFeedbacks} />
 
       {/* Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <RecentOrders orders={orders} />
         <RecentSupportTickets tickets={supportTickets} />
+        <RecentFeedbacks feedbacks={customerFeedbacks} />
       </div>
     </div>
   );
