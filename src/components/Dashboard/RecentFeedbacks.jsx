@@ -6,6 +6,13 @@ import { format } from 'date-fns';
 import Button from '../ui/Button';
 import { Star, ThumbsUp, ThumbsDown } from 'lucide-react';
 
+function convertSecondsToDate(seconds) {
+  const milliseconds = seconds * 1000;
+  const date = new Date(milliseconds);
+  return date.toDateString();
+}
+
+
 const RecentFeedbacks = ({ feedbacks }) => {
   const navigate = useNavigate();
   const sortedFeedbacks = [...feedbacks]
@@ -16,7 +23,7 @@ const RecentFeedbacks = ({ feedbacks }) => {
       
       if (statusDiff !== 0) return statusDiff;
       
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return new Date(convertSecondsToDate(b.createdAt._seconds)).getTime() - new Date(convertSecondsToDate(a.createdAt._seconds)).getTime();
     })
     .slice(0, 5);
 
@@ -103,7 +110,7 @@ const RecentFeedbacks = ({ feedbacks }) => {
                 </td>
                 <td className="px-3 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {format(new Date(feedback.createdAt), 'MMM d, h:mm a')}
+                    {format(new Date(feedback.createdAt._seconds), 'MMM d, h:mm a')}
                   </div>
                 </td>
               </tr>

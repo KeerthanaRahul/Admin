@@ -14,7 +14,7 @@ const FeedbackForm = ({
 }) => {
   const { orders } = useAppContext();
   const [customerName, setCustomerName] = useState('');
-  const [email, setEmail] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
   const [orderNumber, setOrderNumber] = useState('');
   const [rating, setRating] = useState(5);
   const [category, setCategory] = useState('overall');
@@ -28,7 +28,7 @@ const FeedbackForm = ({
   useEffect(() => {
     if (initialData) {
       setCustomerName(initialData.customerName);
-      setEmail(initialData.email);
+      setCustomerEmail(initialData.customerEmail);
       setOrderNumber(initialData.orderNumber || '');
       setRating(initialData.rating);
       setCategory(initialData.category);
@@ -71,10 +71,10 @@ const FeedbackForm = ({
       newErrors.customerName = 'Customer name is required';
     }
     
-    if (!email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Email is invalid';
+    if (!customerEmail.trim()) {
+      newErrors.customerEmail = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(customerEmail)) {
+      newErrors.customerEmail = 'Email is invalid';
     }
     
     if (!description.trim()) {
@@ -94,7 +94,7 @@ const FeedbackForm = ({
     
     onSubmit({
       customerName,
-      email,
+      customerEmail,
       orderNumber: orderNumber || undefined,
       rating,
       category,
@@ -138,23 +138,23 @@ const FeedbackForm = ({
           
           <Input
             label="Email Address"
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            id="customerEmail"
+            type="customerEmail"
+            value={customerEmail}
+            onChange={(e) => setCustomerEmail(e.target.value)}
             placeholder="Email address"
-            error={errors.email}
+            error={errors.customerEmail}
             fullWidth
           />
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <Select
-            label="Related Order (Optional)"
+          <Input
+            label="Order Number (Optional)"
             id="orderNumber"
             value={orderNumber}
+            placeholder="Order Number"
             onChange={setOrderNumber}
-            options={orderOptions}
             fullWidth
           />
           
@@ -179,14 +179,14 @@ const FeedbackForm = ({
             </div>
           </div>
 
-          <Select
+          {/* <Select
             label="Status"
             id="status"
             value={status}
             onChange={(value) => setStatus(value)}
             options={statusOptions}
             fullWidth
-          />
+          /> */}
         </div>
         
         <TextArea
@@ -198,7 +198,7 @@ const FeedbackForm = ({
           rows={4}
           error={errors.description}
           fullWidth
-          className="mb-4"
+          className="mb-4 w-full"
         />
 
         <div className="mb-4">
@@ -237,7 +237,7 @@ const FeedbackForm = ({
           placeholder="Any suggestions for improvement..."
           rows={3}
           fullWidth
-          className="mb-4"
+          className="mb-4 w-full"
         />
 
         {initialData && (

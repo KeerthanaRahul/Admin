@@ -52,6 +52,7 @@ const FoodForm = ({ initialData, onSubmit, onCancel }) => {
     'Savory',
     'Happy',
     'Focused',
+    'Sad'
   ];
   
   const validateForm = () => {

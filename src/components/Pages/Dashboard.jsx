@@ -30,7 +30,7 @@ import RecentFeedbacks from '../Dashboard/RecentFeedbacks';
 
 const Dashboard = () => {
 
-  const { customerFeedbacks, dashboardStats } = useAppContext();
+  const { dashboardStats } = useAppContext();
 
   const [foodItems, setFoodItems] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -47,6 +47,9 @@ const Dashboard = () => {
   const [urgentTickets, setUrgentTickets] = useState(0);
   const [totalSupportTickets, setTotalSupportTickets] = useState(0);
   const [pendingSupportTickets, setPendingSupportTickets] = useState(0);
+  const [customerFeedbacks, setCustomerFeedbacks] = useState([]);
+  const [totalFeedbacks, setTotalFeedbacks] = useState(0);
+  const [averageRating, setAverageRating] = useState(0);
 
   function convertSecondsToDate(seconds) {
     const milliseconds = seconds * 1000;
@@ -85,10 +88,10 @@ const Dashboard = () => {
       setTotalRevenue(totalRevenue);
       const pendingOrders = data?.orderList?.filter(order =>
         ['pending', 'preparing'].includes(order.status)).length;
-        setPendingOrders(pendingOrders);
+      setPendingOrders(pendingOrders);
       const completedOrders = data?.orderList?.filter(order =>
         order.status === 'delivered').length;
-        
+
       const todayOrders = data?.orderList.filter(order =>
         new Date(convertSecondsToDate(order.createdAt?._seconds)) >= todayStart
       );
@@ -98,18 +101,18 @@ const Dashboard = () => {
       const avgOrderValue = data?.orderList.length > 0
         ? totalRevenue / totalOrders
         : 0;
-        setAvgOrderValue(avgOrderValue);
+      setAvgOrderValue(avgOrderValue);
       const completionRate = totalOrders > 0
         ? (completedOrders / totalOrders) * 100
         : 0
-        setCompletionRate(completionRate);
+      setCompletionRate(completionRate);
     } catch (error) {
     } finally {
       setIsLoading(false)
     }
   }
 
-  const getSupports = async() => {
+  const getSupports = async () => {
     setIsLoading(true);
     try {
       const res = await fetch(`http://localhost:8082/api/v1/support/getSupport`);
@@ -121,10 +124,31 @@ const Dashboard = () => {
       setUrgentTickets(urgentTickets);
       const totalSupportTickets = data?.supportList.length;
       setTotalSupportTickets(totalSupportTickets);
-      const pendingSupportTickets = data?.supportList.filter(ticket => 
-      ['open', 'in-progress'].includes(ticket.status)).length;
+      const pendingSupportTickets = data?.supportList.filter(ticket =>
+        ['open', 'in-progress'].includes(ticket.status)).length;
       setPendingSupportTickets(pendingSupportTickets);
-      } catch (error) {
+    } catch (error) {
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const getFeedbacks = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`http://localhost:8082/api/v1/feedback/getFeedbacks`);
+      const data = await res.json();
+      setCustomerFeedbacks(data?.feedbackList);
+      const totalFeedbacks = data?.feedbackList.length;
+      setTotalFeedbacks(totalFeedbacks);
+      const averageRating = totalFeedbacks > 0
+        ? data?.feedbackList.reduce((sum, feedback) => sum + feedback.rating, 0) / totalFeedbacks
+        : 0;
+        setAverageRating(averageRating);
+      const recommendationRate = totalFeedbacks > 0
+        ? (data?.feedbackList.filter(feedback => feedback.wouldRecommend).length / totalFeedbacks) * 100
+        : 0;
+    } catch (error) {
     } finally {
       setIsLoading(false)
     }
@@ -134,10 +158,9 @@ const Dashboard = () => {
     getFoodItems();
     getOrders();
     getSupports();
+    getFeedbacks();
   }, [])
 
-
-  
 
   return (
     <div className="space-y-8">
@@ -234,13 +257,13 @@ const Dashboard = () => {
         />
         <StatsCard
           title="Customer Feedbacks"
-          value={dashboardStats.totalFeedbacks}
+          value={totalFeedbacks}
           icon={<Star size={24} />}
           className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200"
         />
         <StatsCard
           title="Avg Rating"
-          value={`${dashboardStats.averageRating.toFixed(1)}/5`}
+          value={`${averageRating.toFixed(1)}/5`}
           icon={<ThumbsUp size={24} />}
           className="bg-gradient-to-br from-yellow-50 to-amber-50 border-yellow-200"
         />

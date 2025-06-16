@@ -150,7 +150,7 @@ const SupportTicketList = ({
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {ticket?.createdAt?._seconds ? convertSecondsToDate(ticket?.createdAt?._seconds) : ''}
+                  {ticket?.createdAt?._seconds ? convertSecondsToDate(ticket?.createdAt?._seconds) : ''}
                   </div>
                   <div className="text-sm text-gray-500">
                     {ticket?.createdAt?._seconds ? convertSecondsToDate(ticket?.createdAt?._seconds) : ''}

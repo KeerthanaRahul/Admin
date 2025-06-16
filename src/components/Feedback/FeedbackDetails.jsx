@@ -102,7 +102,7 @@ const FeedbackDetails = ({
                       <Mail size={18} className="text-amber-600 mr-2" />
                       <div>
                         <p className="text-sm font-medium text-gray-500">Email</p>
-                        <p className="text-sm text-gray-900">{feedback.email}</p>
+                        <p className="text-sm text-gray-900">{feedback.customerEmail}</p>
                       </div>
                     </div>
                     
@@ -121,7 +121,7 @@ const FeedbackDetails = ({
                       <div>
                         <p className="text-sm font-medium text-gray-500">Submitted</p>
                         <p className="text-sm text-gray-900">
-                          {format(new Date(feedback.createdAt), 'MMM d, yyyy h:mm a')}
+                          {format(new Date(feedback.createdAt._seconds), 'MMM d, yyyy h:mm a')}
                         </p>
                       </div>
                     </div>
@@ -157,8 +157,9 @@ const FeedbackDetails = ({
                 </div>
 
                 {/* Status Management */}
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <p className="text-sm font-medium text-gray-500 mb-2">Status</p>
+                  <p className="text-sm text-gray-900">{feedback.status}</p>
                   <select
                     value={feedback.status}
                     onChange={handleStatusChange}
@@ -169,7 +170,7 @@ const FeedbackDetails = ({
                     <option value="responded">Responded</option>
                     <option value="archived">Archived</option>
                   </select>
-                </div>
+                </div> */}
                 
                 {/* Feedback Content */}
                 <div className="mb-4">
@@ -200,7 +201,7 @@ const FeedbackDetails = ({
                 )}
 
                 {/* Admin Response */}
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <p className="text-sm font-medium text-gray-500 mb-2">Admin Response</p>
                   {feedback.adminResponse ? (
                     <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-3">
@@ -229,19 +230,19 @@ const FeedbackDetails = ({
                     <Send size={16} className="mr-1" />
                     {isSubmittingResponse ? 'Sending...' : 'Send Response'}
                   </Button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
           
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <Button
+            {/* <Button
               variant="primary"
               onClick={() => onEdit(feedback)}
               className="w-full sm:w-auto sm:ml-3"
             >
               Edit Feedback
-            </Button>
+            </Button> */}
             <Button
               variant="outline"
               onClick={onClose}

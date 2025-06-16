@@ -1,23 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import FeedbackForm from '../Feedback/FeedbackForm';
 import Button from '../ui/Button';
 import FeedbackDetails from '../Feedback/FeedbackDetails';
 import FeedbackList from '../Feedback/FeedbackList';
-import { useAppContext } from '../Context/AppContext';
+import Loader from '../../CommonComponents/Loader/Loader';
+import ErrorModal from '../ui/ErrorModal';
+import SuccessModal from '../ui/SuccessModal';
+import { v4 as uuidv4 } from 'uuid';
 
 const Feedback = () => {
-  const { 
-    customerFeedbacks, 
-    addCustomerFeedback, 
-    updateCustomerFeedback, 
-    updateFeedbackStatus,
-    deleteCustomerFeedback 
-  } = useAppContext();
+  
+  let apiUrl = 'http://localhost:8082/api/v1/feedback';
   
   const [showForm, setShowForm] = useState(false);
   const [editingFeedback, setEditingFeedback] = useState(null);
   const [viewingFeedback, setViewingFeedback] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAddFeedbackLoading, setIsAddFeedbackLoading] = useState(false);
+  const [customerFeedbacks, setCustomerFeedbacks] = useState([]);
+  const [errorModal, setErrorModal] = useState({ isOpen: false, title: '', message: '' });
+  const [successModal, setSuccessModal] = useState({ isOpen: false, title: '', message: '' });
+  
+
+  const getFeedbacks = async() => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${apiUrl}/getFeedbacks`);
+      const data = await res.json();
+      setCustomerFeedbacks(data?.feedbackList)
+      } catch (error) {
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    getFeedbacks();
+  }, [])
   
   const handleAddNew = () => {
     setEditingFeedback(null);
@@ -39,6 +59,45 @@ const Feedback = () => {
       deleteCustomerFeedback(id);
     }
   };
+
+  const addCustomerFeedback = async(feedback) => {
+    let payload = feedback;
+    payload.id = uuidv4();
+    setIsAddFeedbackLoading(true);
+    try {
+      const res = await fetch(`${apiUrl}/addFeedback`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      if(!res.ok) {
+        setErrorModal({
+          isOpen: true,
+          title: 'Add Failed',
+          message: 'Failed to add the feedback. Please try again.',
+          details: error instanceof Error ? error.message : 'Unknown error occurred'
+        });
+      } else {
+        setSuccessModal({
+          isOpen: true,
+          title: 'Feedback Added',
+          message: `Feedback has been successfully added.`
+        });
+      }
+      getFeedbacks();
+    } catch (error) {
+      setErrorModal({
+        isOpen: true,
+        title: 'Add Failed',
+        message: 'Failed to add the feedback. Please try again.',
+        details: error instanceof Error ? error.message : 'Unknown error occurred'
+      });
+    } finally {
+      setIsAddFeedbackLoading(false)
+    }
+  }
   
   const handleSubmit = (feedback) => {
     if (editingFeedback) {
@@ -66,15 +125,17 @@ const Feedback = () => {
     }
   };
 
-  const handleUpdateResponse = (feedbackId, response) => {
-    updateCustomerFeedback(feedbackId, { adminResponse: response });
-    if (viewingFeedback && viewingFeedback.id === feedbackId) {
-      setViewingFeedback({ ...viewingFeedback, adminResponse: response });
-    }
+  const closeErrorModal = () => {
+    setErrorModal({ isOpen: false, title: '', message: '' });
+  };
+
+  const closeSuccessModal = () => {
+    setSuccessModal({ isOpen: false, title: '', message: '' });
   };
   
   return (
     <div className="space-y-6">
+      {(isLoading || isAddFeedbackLoading) && <Loader showLoader={(isLoading || isAddFeedbackLoading)} />}
       {showForm ? (
         <FeedbackForm
           initialData={editingFeedback || undefined}
@@ -84,7 +145,6 @@ const Feedback = () => {
       ) : (
         <>
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <h2 className="text-xl font-semibold text-gray-800">Customer Feedback</h2>
             <Button 
               onClick={handleAddNew}
               className="flex items-center"
@@ -108,9 +168,21 @@ const Feedback = () => {
           onClose={handleCloseDetails}
           onEdit={handleEdit}
           onStatusChange={handleStatusChange}
-          onUpdateResponse={handleUpdateResponse}
         />
       )}
+        <ErrorModal
+        isOpen={errorModal.isOpen}
+        onClose={closeErrorModal}
+        title={errorModal.title}
+        message={errorModal.message}
+        details={errorModal.details}
+      />
+      <SuccessModal
+        isOpen={successModal.isOpen}
+        onClose={closeSuccessModal}
+        title={successModal.title}
+        message={successModal.message}
+      />
     </div>
   );
 };

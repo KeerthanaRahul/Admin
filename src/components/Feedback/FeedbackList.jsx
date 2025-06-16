@@ -92,16 +92,51 @@ const FeedbackList = ({
     ));
   };
   
+  function convertSecondsToDate(seconds) {
+    const milliseconds = seconds * 1000;
+    const date = new Date(milliseconds);
+    return date.toDateString();
+  }
+
+  function secondsToHms(totalSeconds) {
+    const date = new Date(0, 0, 0, 0, 0, totalSeconds);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+
+  const formattedHours = String(hours).padStart(2, '0');
+  const formattedMinutes = String(minutes).padStart(2, '0');
+
+  return convertTo12HourFormat(`${formattedHours}:${formattedMinutes}`);
+  }
+
+  function convertTo12HourFormat(time24) {
+    // Assuming time24 is in "HH:MM:SS" format (e.g., "02:08:55")
+    const [hours, minutes] = time24.split(':').map(Number); // Split and convert to numbers
+  
+    const date = new Date(); // Create a Date object
+    date.setHours(hours, minutes); // Set the time using the extracted values
+  
+    // Use toLocaleTimeString to format in 12-hour format with AM/PM
+    const time12 = date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true, // Force 12-hour format
+    });
+  
+    return time12;
+  }
+
   return (
     <Card title="Customer Feedbacks">
       <div className="mb-4 flex flex-col sm:flex-row justify-between gap-2">
         <div className="flex flex-col sm:flex-row gap-2">
-          <Select
+          {/* <Select
             options={statusOptions}
             value={statusFilter}
             onChange={setStatusFilter}
             className="w-full sm:w-40"
-          />
+          /> */}
           <Select
             options={categoryOptions}
             value={categoryFilter}
@@ -118,7 +153,7 @@ const FeedbackList = ({
             options={recommendationOptions}
             value={recommendationFilter}
             onChange={setRecommendationFilter}
-            className="w-full sm:w-40"
+            className="w-full"
           />
         </div>
         <div className="text-sm text-gray-600">
@@ -145,9 +180,9 @@ const FeedbackList = ({
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Recommend
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              {/* <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
-              </th>
+              </th> */}
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Date
               </th>
@@ -161,7 +196,7 @@ const FeedbackList = ({
               <tr key={feedback.id} className="hover:bg-gray-50">
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">{feedback.customerName}</div>
-                  <div className="text-sm text-gray-500">{feedback.email}</div>
+                  <div className="text-sm text-gray-500">{feedback.customerEmail}</div>
                   {feedback.orderNumber && (
                     <div className="text-xs text-gray-400">Order: {feedback.orderNumber.substring(0, 8)}...</div>
                   )}
@@ -197,15 +232,15 @@ const FeedbackList = ({
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap">
+                {/* <td className="px-4 py-4 whitespace-nowrap">
                   <FeedbackStatusBadge status={feedback.status} />
-                </td>
+                </td> */}
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {format(new Date(feedback.createdAt), 'MMM d, yyyy')}
+                    {convertSecondsToDate(feedback.createdAt._seconds)}
                   </div>
                   <div className="text-sm text-gray-500">
-                    {format(new Date(feedback.createdAt), 'h:mm a')}
+                    {secondsToHms(feedback.createdAt._seconds)}
                   </div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -218,22 +253,22 @@ const FeedbackList = ({
                     >
                       <Eye size={16} className="mr-1" /> View
                     </Button>
-                    <Button
+                    {/* <Button
                       variant="secondary"
                       size="sm"
                       onClick={() => onEdit(feedback)}
                       className="flex items-center"
                     >
                       <Edit size={16} className="mr-1" /> Edit
-                    </Button>
-                    <Button
+                    </Button> */}
+                    {/* <Button
                       variant="danger"
                       size="sm"
                       onClick={() => onDelete(feedback.id)}
                       className="flex items-center"
                     >
                       <Trash2 size={16} className="mr-1" /> Delete
-                    </Button>
+                    </Button> */}
                   </div>
                 </td>
               </tr>
