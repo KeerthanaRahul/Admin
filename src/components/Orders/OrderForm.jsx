@@ -56,7 +56,7 @@ const OrderForm = ({
       { value: '', label: 'Select an item...' },
       ...availableFoodItems.map(item => ({
         value: item.id,
-        label: `${item.name} - $${item.price.toFixed(2)}`,
+        label: `${item.name} - ₹${item.price.toFixed(2)}`,
       })),
     ];
     setFoodItemOptions(foodItemOptions);
@@ -308,7 +308,7 @@ const OrderForm = ({
                     Subtotal
                   </label>
                   <div className="text-lg font-semibold text-gray-900">
-                    ${(item.price * item.quantity).toFixed(2)}
+                  ₹{(item.price * item.quantity).toFixed(2)}
                   </div>
                 </div>
                 
@@ -328,7 +328,7 @@ const OrderForm = ({
           <div className="mt-4 p-3 bg-gray-50 rounded-md">
             <div className="flex justify-between items-center">
               <span className="text-lg font-medium text-gray-900">Total Amount:</span>
-              <span className="text-xl font-bold text-amber-700">${totalAmount.toFixed(2)}</span>
+              <span className="text-xl font-bold text-amber-700">₹{totalAmount.toFixed(2)}</span>
             </div>
           </div>
         </div>

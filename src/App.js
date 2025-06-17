@@ -41,6 +41,13 @@ function App() {
                 </Layout>
               </ProtectedRoute>
             } />
+            <Route path="/orders/:linkId" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Orders />
+                </Layout>
+              </ProtectedRoute>
+            } />
             <Route path="/food" element={
               <ProtectedRoute>
                 <Layout>

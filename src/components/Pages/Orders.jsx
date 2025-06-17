@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAppContext } from '../Context/AppContext';
 import Button from '../ui/Button';
-import { Plus } from 'lucide-react';
+import { AlertCircle, CheckCircle, Plus, X } from 'lucide-react';
 import OrderForm from '../Orders/OrderForm';
 import OrderList from '../Orders/OrderList';
 import OrderDetails from '../Orders/OrderDetails';
@@ -10,6 +10,8 @@ import SuccessModal from '../ui/SuccessModal';
 import Loader from '../../CommonComponents/Loader/Loader';
 import { v4 as uuidv4 } from 'uuid';
 import ConfirmationModal from '../ui/ConfirmationModal';
+import { useNavigate, useParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Orders = () => {
   let apiUrl = 'http://localhost:8082/api/v1/orders';
@@ -29,6 +31,10 @@ const Orders = () => {
   const [successModal, setSuccessModal] = useState({ isOpen: false, title: '', message: '' });
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, item: null });
   const [cancelModal, setCancelModal] = useState({ isOpen: false, item: null });
+  const [paymentModal, setPaymentModal] = useState({ isOpen: false, type: '', message: '' });
+
+  const params = useParams();
+  const navigate = useNavigate();
   
   
   const handleViewDetails = (order) => {
@@ -170,7 +176,7 @@ const Orders = () => {
     try {
       const res = await fetch(`${apiUrl}/getOrders`);
       const data = await res.json();
-      setOrders(data?.orderList)
+      setOrders(data?.orderList.sort((a,b) => b.createdAt._seconds - a.createdAt._seconds))
       } catch (error) {
       setOrdersError('Something went wrong. Please try again later.');
     } finally {
@@ -181,6 +187,111 @@ const Orders = () => {
   useEffect(() => {
     getOrders()
   }, [])
+
+  useEffect(() => {
+    const paymenthandled = localStorage.getItem('paymenthandled');
+    if(params?.linkId && paymenthandled) {
+      createOrderCafe(params?.linkId);
+    }
+  }, [params?.linkId])
+
+  const createFinalOrder = async(linkId) => {
+    const orderData = JSON.parse(localStorage.getItem('orderData'));
+    let payload = orderData;
+    payload.id = linkId;
+    payload.from = 'admin';
+    setIsLoading(true);
+     try {
+        const res = await fetch('http://localhost:8082/api/v1/orders/addOrder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      if(res.ok) {
+        clearCart();
+        localStorage.removeItem('orderData')
+        localStorage.removeItem('paymenthandled')
+        getOrders()
+      }
+     } catch (err) {
+
+     } finally {
+      setIsLoading(false);
+     }
+  }
+
+  const createOrderCafe = async(linkId) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`http://localhost:8082/api/v1/orders/check-payment/${linkId}`);
+      const data = await res.json();
+      if (res.ok) {
+        if(data?.paymentStatus === 'PAID') {
+          setPaymentModal({
+            isOpen: true,
+            type: 'success',
+            message: 'Payment successful! Redirecting...',
+            paymentUrl: data?.data?.link_url
+          });
+          createFinalOrder(linkId);
+        } else {
+          setPaymentModal({
+            isOpen: true,
+            type: 'failure',
+            message: 'Payment failed. Please try again.'
+          });
+        }
+      }
+    } catch (err) {
+      setPaymentModal({
+        isOpen: true,
+        type: 'failure',
+        message: 'Payment failed. Please try again.'
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const closePaymentModal = () => {
+    setPaymentModal({ isOpen: false, type: '', message: '' });
+  };
+
+  const retryPayment = () => {
+    closePaymentModal();
+    handlePayment();
+  };
+
+  const handlePayment = async(orderData) => {
+    setIsLoading(true);
+    try {
+      let id = uuidv4();
+      const paymentPayload = {
+        customerPhoneNumber: orderData?.customerPhoneNumber,
+        customerEmail: orderData.customerEmail,
+        customerName: orderData.customerName,
+        totalAmount: +orderData?.totalAmount,
+        from: 'admin',
+        id: id
+      }
+      const res = await fetch('http://localhost:8082/api/v1/orders/handle-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentPayload),
+      });
+      const data = await res.json();
+      localStorage.setItem('paymenthandled', true);
+      localStorage.setItem('orderData', JSON.stringify(orderData));
+      window.location.href = data?.data?.link_url;
+    } catch(error) {
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const addOrder = async (orderData) => {
     let payload = orderData;
@@ -234,7 +345,7 @@ const Orders = () => {
         ...selectedReOrder,
         status: 'pending'
       }
-      addOrder(orderData)
+      handlePayment(orderData)
       setSelectedReOrder(null);
     }
   };
@@ -282,7 +393,7 @@ const Orders = () => {
     if (editingOrder) {
       updateOrder(editingOrder.id, orderData);
     } else {
-      addOrder(orderData);
+      handlePayment(orderData);
     }
     setShowForm(false);
     setEditingOrder(null);
@@ -391,6 +502,75 @@ const Orders = () => {
         title={successModal.title}
         message={successModal.message}
       />
+      <AnimatePresence>
+        {paymentModal.isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative"
+            >
+              {/* Close button */}
+              <button
+                onClick={closePaymentModal}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-6 w-6" />
+              </button>
+
+              {paymentModal.type === 'success' ? (
+                <div className="text-center">
+                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Payment Successful!
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    {paymentModal.message}
+                  </p>
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+                    <span className="ml-2 text-sm text-gray-600">Redirecting...</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+                    <AlertCircle className="h-8 w-8 text-red-600" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Payment Failed
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-6">
+                    {paymentModal.message}
+                  </p>
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={closePaymentModal}
+                      className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={retryPayment}
+                      className="flex-1 bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors"
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
