@@ -138,7 +138,6 @@ const Food = () => {
           isOpen: true,
           title: 'Add Failed',
           message: 'Failed to add the menu item. Please try again.',
-          details: error instanceof Error ? error.message : 'Unknown error occurred'
         });
       } else {
         setSuccessModal({
@@ -177,7 +176,6 @@ const Food = () => {
           isOpen: true,
           title: 'Update Failed',
           message: 'Failed to update the menu item. Please try again.',
-          details: error instanceof Error ? error.message : 'Unknown error occurred'
         });
       } else {
         setSuccessModal({
@@ -215,7 +213,6 @@ const Food = () => {
           isOpen: true,
           title: 'Delete Failed',
           message: 'Failed to delete the menu item. Please try again.',
-          details: error instanceof Error ? error.message : 'Unknown error occurred'
         });
       } else {
         setSuccessModal({

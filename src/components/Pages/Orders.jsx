@@ -89,7 +89,6 @@ const Orders = () => {
           isOpen: true,
           title: 'Delete Failed',
           message: 'Failed to delete the order. Please try again.',
-          details: error instanceof Error ? error.message : 'Unknown error occurred'
         });
       } else {
         setSuccessModal({
@@ -127,7 +126,6 @@ const Orders = () => {
           isOpen: true,
           title: 'Cancel Order Failed',
           message: 'Failed to cancel the order. Please try again.',
-          details: error instanceof Error ? error.message : 'Unknown error occurred'
         });
       } else {
         setSuccessModal({
@@ -210,7 +208,6 @@ const Orders = () => {
         body: JSON.stringify(payload),
       });
       if(res.ok) {
-        clearCart();
         localStorage.removeItem('orderData')
         localStorage.removeItem('paymenthandled')
         getOrders()
@@ -311,7 +308,6 @@ const Orders = () => {
           isOpen: true,
           title: 'Add Failed',
           message: 'Failed to add the order. Please try again.',
-          details: error instanceof Error ? res.statusText : 'Unknown error occurred'
         });
       } else {
         setSuccessModal({
@@ -368,7 +364,6 @@ const Orders = () => {
           isOpen: true,
           title: 'Update Failed',
           message: 'Failed to update the order. Please try again.',
-          details: error instanceof Error ? res.statusText : 'Unknown error occurred'
         });
       } else {
         setSuccessModal({

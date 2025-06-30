@@ -56,7 +56,7 @@ const Feedback = () => {
   
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this customer feedback?')) {
-      deleteCustomerFeedback(id);
+      // deleteCustomerFeedback(id);
     }
   };
 
@@ -77,7 +77,6 @@ const Feedback = () => {
           isOpen: true,
           title: 'Add Failed',
           message: 'Failed to add the feedback. Please try again.',
-          details: error instanceof Error ? error.message : 'Unknown error occurred'
         });
       } else {
         setSuccessModal({
@@ -101,7 +100,7 @@ const Feedback = () => {
   
   const handleSubmit = (feedback) => {
     if (editingFeedback) {
-      updateCustomerFeedback(editingFeedback.id, feedback);
+      // updateCustomerFeedback(editingFeedback.id, feedback);
     } else {
       addCustomerFeedback(feedback);
     }
@@ -119,7 +118,7 @@ const Feedback = () => {
   };
 
   const handleStatusChange = (feedbackId, status) => {
-    updateFeedbackStatus(feedbackId, status);
+    // updateFeedbackStatus(feedbackId, status);
     if (viewingFeedback && viewingFeedback.id === feedbackId) {
       setViewingFeedback({ ...viewingFeedback, status });
     }

@@ -17,7 +17,7 @@ const FeedbackDetails = ({
   const [adminResponse, setAdminResponse] = useState(feedback.adminResponse || '');
   const [isSubmittingResponse, setIsSubmittingResponse] = useState(false);
 
-  const handleStatusChange = () => {
+  const handleStatusChange = (e) => {
     onStatusChange(feedback.id, e.target.value);
   };
 

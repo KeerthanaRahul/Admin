@@ -69,7 +69,6 @@ const Support = () => {
           isOpen: true,
           title: 'Delete Failed',
           message: 'Failed to delete the support. Please try again.',
-          details: error instanceof Error ? error.message : 'Unknown error occurred'
         });
       } else {
         setSuccessModal({
@@ -142,7 +141,6 @@ const Support = () => {
           isOpen: true,
           title: 'Add Failed',
           message: 'Failed to add support. Please try again.',
-          details: error instanceof Error ? error.message : 'Unknown error occurred'
         });
       } else {
         setSuccessModal({
@@ -181,7 +179,6 @@ const Support = () => {
           isOpen: true,
           title: 'Update Failed',
           message: 'Failed to update the support. Please try again.',
-          details: error instanceof Error ? error.message : 'Unknown error occurred'
         });
       } else {
         setSuccessModal({
