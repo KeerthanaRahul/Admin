@@ -119,7 +119,7 @@ const PopularItems = ({ orders, foodItems }) => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-green-700">${item.totalRevenue.toFixed(2)}</p>
+                    <p className="font-bold text-green-700">₹{item.totalRevenue.toFixed(2)}</p>
                     <p className="text-xs text-gray-500">revenue</p>
                   </div>
                 </div>

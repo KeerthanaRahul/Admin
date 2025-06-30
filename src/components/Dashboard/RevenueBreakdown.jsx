@@ -66,21 +66,21 @@ const RevenueBreakdown = ({ orders }) => {
             <div className="flex items-center justify-center mb-2">
               <DollarSign size={20} className="text-green-600" />
             </div>
-            <p className="text-lg font-bold text-green-600">${totalRevenue.toFixed(2)}</p>
+            <p className="text-lg font-bold text-green-600">₹{totalRevenue.toFixed(2)}</p>
             <p className="text-xs text-gray-600">Total Revenue</p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm text-center">
             <div className="flex items-center justify-center mb-2">
               <Calendar size={20} className="text-blue-600" />
             </div>
-            <p className="text-lg font-bold text-blue-600">${todayRevenue.toFixed(2)}</p>
+            <p className="text-lg font-bold text-blue-600">₹{todayRevenue.toFixed(2)}</p>
             <p className="text-xs text-gray-600">Today's Revenue</p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm text-center">
             <div className="flex items-center justify-center mb-2">
               <Target size={20} className="text-purple-600" />
             </div>
-            <p className="text-lg font-bold text-purple-600">${avgOrderValue.toFixed(2)}</p>
+            <p className="text-lg font-bold text-purple-600">₹{avgOrderValue.toFixed(2)}</p>
             <p className="text-xs text-gray-600">Avg Order Value</p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm text-center">
@@ -108,7 +108,7 @@ const RevenueBreakdown = ({ orders }) => {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Peak Revenue</span>
-                <span className="text-sm font-medium text-green-600">${peakDay.revenue.toFixed(2)}</span>
+                <span className="text-sm font-medium text-green-600">₹{peakDay.revenue.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Daily Change</span>
@@ -127,7 +127,7 @@ const RevenueBreakdown = ({ orders }) => {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Daily Target</span>
-                <span className="text-sm font-medium text-gray-900">$500.00</span>
+                <span className="text-sm font-medium text-gray-900">₹500.00</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Achievement</span>

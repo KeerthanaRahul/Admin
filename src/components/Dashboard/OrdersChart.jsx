@@ -22,7 +22,7 @@ const OrdersChart = ({ orders }) => {
         backgroundColor: 'rgba(121, 85, 72, 0.6)',
       },
       {
-        label: 'Revenue ($)',
+        label: 'Revenue (₹)',
         data: [],
         backgroundColor: 'rgba(244, 128, 36, 0.6)',
       },
@@ -62,7 +62,7 @@ const OrdersChart = ({ orders }) => {
           backgroundColor: 'rgba(121, 85, 72, 0.6)',
         },
         {
-          label: 'Revenue ($)',
+          label: 'Revenue (₹)',
           data: revenues.map(rev => parseFloat(rev.toFixed(2))),
           backgroundColor: 'rgba(244, 128, 36, 0.6)',
         },

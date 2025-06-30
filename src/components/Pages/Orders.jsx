@@ -210,7 +210,7 @@ const Orders = () => {
       if(res.ok) {
         localStorage.removeItem('orderData')
         localStorage.removeItem('paymenthandled')
-        getOrders()
+        getOrders();
       }
      } catch (err) {
 
@@ -497,75 +497,6 @@ const Orders = () => {
         title={successModal.title}
         message={successModal.message}
       />
-      <AnimatePresence>
-        {paymentModal.isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative"
-            >
-              {/* Close button */}
-              <button
-                onClick={closePaymentModal}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-6 w-6" />
-              </button>
-
-              {paymentModal.type === 'success' ? (
-                <div className="text-center">
-                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-                    <CheckCircle className="h-8 w-8 text-green-600" />
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Payment Successful!
-                  </h3>
-                  <p className="text-sm text-gray-500 mb-4">
-                    {paymentModal.message}
-                  </p>
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
-                    <span className="ml-2 text-sm text-gray-600">Redirecting...</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center">
-                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
-                    <AlertCircle className="h-8 w-8 text-red-600" />
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Payment Failed
-                  </h3>
-                  <p className="text-sm text-gray-500 mb-6">
-                    {paymentModal.message}
-                  </p>
-                  <div className="flex space-x-3">
-                    <button
-                      onClick={closePaymentModal}
-                      className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={retryPayment}
-                      className="flex-1 bg-primary-800 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors"
-                    >
-                      Try Again
-                    </button>
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

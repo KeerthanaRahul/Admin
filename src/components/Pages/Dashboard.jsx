@@ -183,7 +183,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard
           title="Total Revenue"
-          value={totalRevenue && `$${totalRevenue?.toFixed(2)}`}
+          value={totalRevenue && `₹${totalRevenue?.toFixed(2)}`}
           icon={<DollarSign size={24} />}
           className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200"
         />
@@ -195,13 +195,13 @@ const Dashboard = () => {
         />
         <StatsCard
           title="Today's Revenue"
-          value={`$${todayRevenue.toFixed(2)}`}
+          value={`₹${todayRevenue.toFixed(2)}`}
           icon={<TrendingUp size={24} />}
           className="bg-gradient-to-br from-purple-50 to-violet-50 border-purple-200"
         />
         <StatsCard
           title="Avg Order Value"
-          value={`$${avgOrderValue.toFixed(2)}`}
+          value={`₹${avgOrderValue.toFixed(2)}`}
           icon={<Target size={24} />}
           className="bg-gradient-to-br from-amber-50 to-yellow-50 border-amber-200"
         />
