@@ -25,7 +25,7 @@ const Layout = ({ children }) => {
       case '/feedback':
         return 'Customer Feedback';
       default:
-        return 'Café Admin';
+        return 'Craxy Corner Admin';
     }
   };
 

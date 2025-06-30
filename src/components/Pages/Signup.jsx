@@ -112,7 +112,7 @@ const Signup = () => {
             Create Account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Join our café admin platform
+            Join our Craxy Corner admin platform
           </p>
         </div>
 

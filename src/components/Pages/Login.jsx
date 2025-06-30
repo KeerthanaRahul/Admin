@@ -69,7 +69,7 @@ const Login = () => {
             Welcome Back
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Sign in to your café admin account
+            Sign in to your Craxy Corner admin account
           </p>
         </div>
 

@@ -12,7 +12,7 @@ import ErrorModal from '../ui/ErrorModal';
 import SuccessModal from '../ui/SuccessModal';
 
 const Food = () => {
-  let apiUrl = 'http://localhost:8082/api/v1/food';
+  let apiUrl = 'https://tasteflowbackend.onrender.com/api/v1/food';
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('all');
