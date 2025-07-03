@@ -35,6 +35,8 @@ const FoodForm = ({ initialData, onSubmit, onCancel }) => {
   const categoryOptions = [
     { value: 'Beverages', label: 'Beverages' },
     { value: 'Breakfast', label: 'Breakfast' },
+    { value: 'Main', label: 'Main' },
+    { value: 'Sides', label: 'Sides' },
     { value: 'Lunch', label: 'Lunch' },
     { value: 'Dinner', label: 'Dinner' },
     { value: 'Pastries', label: 'Pastries' },
@@ -52,7 +54,9 @@ const FoodForm = ({ initialData, onSubmit, onCancel }) => {
     'Savory',
     'Happy',
     'Focused',
-    'Sad'
+    'Sad',
+    'Excited',
+    'Stressed'
   ];
   
   const validateForm = () => {
