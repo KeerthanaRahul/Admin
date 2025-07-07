@@ -25,7 +25,7 @@ const Layout = ({ children }) => {
       case '/feedback':
         return 'Customer Feedback';
       default:
-        return 'Craxy Corner Admin';
+        return 'MoodSync Admin';
     }
   };
 

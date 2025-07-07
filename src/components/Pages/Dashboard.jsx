@@ -27,6 +27,7 @@ import OrdersChart from '../Dashboard/OrdersChart';
 import Loader from '../../CommonComponents/Loader/Loader';
 import FeedbackMetrics from '../Dashboard/FeedbackMetrics';
 import RecentFeedbacks from '../Dashboard/RecentFeedbacks';
+import logo from '../../assets/logo2.png'
 
 const Dashboard = () => {
 
@@ -168,13 +169,13 @@ const Dashboard = () => {
       <div className="bg-gradient-to-r from-amber-600 to-orange-600 rounded-xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold mb-2">Welcome to Craxy Corner Admin Dashboard</h1>
+            <h1 className="text-2xl font-bold mb-2">Welcome to MoodSync Admin Dashboard</h1>
             <p className="text-amber-100">
               Here's what's happening at your café today
             </p>
           </div>
           <div className="hidden md:block">
-            <Coffee size={48} className="text-amber-200" />
+            <img src={logo} style={{ height: 100, width: 100 }}/>
           </div>
         </div>
       </div>

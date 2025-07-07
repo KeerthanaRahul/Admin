@@ -5,6 +5,7 @@ import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { Coffee, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import logo from '../../assets/logo2.png'
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -62,14 +63,14 @@ const Login = () => {
         <div className="text-center">
           <div className="flex justify-center">
             <div className="bg-amber-700 p-3 rounded-full">
-              <Coffee className="h-8 w-8 text-white" />
+             <img src={logo} style={{ height: 50, width: 50 }}/>
             </div>
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
             Welcome Back
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Sign in to your Craxy Corner admin account
+            Sign in to your MoodSync admin account
           </p>
         </div>
 

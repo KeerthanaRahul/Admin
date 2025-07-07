@@ -5,6 +5,7 @@ import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { Coffee, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
 import { useAuth } from '../Context/AuthContext';
+import logo from '../../assets/logo2.png'
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -105,14 +106,14 @@ const Signup = () => {
         <div className="text-center">
           <div className="flex justify-center">
             <div className="bg-amber-700 p-3 rounded-full">
-              <Coffee className="h-8 w-8 text-white" />
+              <img src={logo} style={{ height: 50, width: 50 }}/>
             </div>
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
             Create Account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Join our Craxy Corner admin platform
+            Join our MoodSync admin platform
           </p>
         </div>
 

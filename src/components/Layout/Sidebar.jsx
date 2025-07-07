@@ -11,6 +11,7 @@ import {
   Star
 } from 'lucide-react';
 import { useAuth } from '../Context/AuthContext';
+import logo from '../../assets/logo2.png'
 
 const Sidebar = () => {
   const location = useLocation();
@@ -52,8 +53,8 @@ const Sidebar = () => {
     <div className="bg-white h-full border-r border-gray-200 flex flex-col transition-all duration-300">
       <div className="p-5 border-b border-gray-200">
         <div className="flex items-center space-x-2">
-          <Coffee className="text-amber-700" size={28} />
-          <h1 className="text-xl font-bold text-gray-800">Craxy Corner Admin</h1>
+          <img src={logo} style={{ height: 50, width: 50 }}/>
+          <h1 className="text-xl font-bold text-gray-800">MoodSync Admin</h1>
         </div>
       </div>
       
