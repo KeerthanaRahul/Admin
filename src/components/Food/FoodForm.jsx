@@ -46,7 +46,6 @@ const FoodForm = ({ initialData, onSubmit, onCancel }) => {
     'Relaxing',
     'Energizing',
     'Healthy',
-    'Savory',
     'Happy',
     'Sad',
     'Excited',
