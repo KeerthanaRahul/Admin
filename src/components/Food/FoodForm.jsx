@@ -39,21 +39,15 @@ const FoodForm = ({ initialData, onSubmit, onCancel }) => {
     { value: 'Sides', label: 'Sides' },
     { value: 'Lunch', label: 'Lunch' },
     { value: 'Dinner', label: 'Dinner' },
-    { value: 'Pastries', label: 'Pastries' },
     { value: 'Desserts', label: 'Desserts' },
   ];
 
   const moodOptions = [
-    'Healthy',
     'Relaxing',
     'Energizing',
-    'Indulgent',
     'Healthy',
-    'Light',
-    'Sweet',
     'Savory',
     'Happy',
-    'Focused',
     'Sad',
     'Excited',
     'Stressed'
