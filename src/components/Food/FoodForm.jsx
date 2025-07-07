@@ -43,18 +43,16 @@ const FoodForm = ({ initialData, onSubmit, onCancel }) => {
   ];
 
   const moodOptions = [
-    "Indulgent",
-    "Savory",
-    "Sweet",
-    "Light",
     "Foucsed",
     'Relaxing',
-    'Energizing',
     'Healthy',
     'Happy',
     'Sad',
     'Excited',
-    'Stressed'
+    'Stressed',
+    "Indian",
+    "salad",
+    "soup"
   ];
   
   const validateForm = () => {
