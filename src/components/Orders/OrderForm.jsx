@@ -32,7 +32,7 @@ const OrderForm = ({
       setTableNumber(initialData.tableNumber);
       setStatus(initialData.status);
       setItems(initialData.items.map(item => ({
-        foodId: item.foodId,
+        foodId: item.foodId ? item.foodId : item.id,
         name: item.name,
         quantity: item.quantity,
         price: item.price,
@@ -177,7 +177,6 @@ const OrderForm = ({
   };
 
   const totalAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  
   return (
     <>
     {(isLoading) && <Loader showLoader={(isLoading)} />}

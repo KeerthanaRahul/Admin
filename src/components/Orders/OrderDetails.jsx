@@ -135,10 +135,10 @@ const OrderDetails= ({
                               {item.quantity}
                             </td>
                             <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right">
-                              ${item.price.toFixed(2)}
+                            ₹{item.price.toFixed(2)}
                             </td>
                             <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
-                              ${(item.price * item.quantity).toFixed(2)}
+                            ₹{(item.price * item.quantity).toFixed(2)}
                             </td>
                           </tr>
                         ))}
@@ -149,7 +149,7 @@ const OrderDetails= ({
                             Total Amount:
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap text-sm font-bold text-gray-900 text-right">
-                            ${order.totalAmount.toFixed(2)}
+                           ₹{order.totalAmount.toFixed(2)}
                           </td>
                         </tr>
                       </tfoot>
